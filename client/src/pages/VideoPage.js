@@ -2,12 +2,13 @@ import React from 'react';
 import Container from "@material-ui/core/Container";
 import {Box} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
+import { Player } from '../components/Player';
 
 export const VideoPage = () => {
     const classes = useStyles();
     return (
         <Container className={classes.wrapper}>
-            <Box className={classes.content}>
+            {/* <Box className={classes.content}>
                 <h1>
                     Welcome stranger!
                 </h1>
@@ -19,7 +20,8 @@ export const VideoPage = () => {
                     more recently with desktop publishing software like Aldus PageMaker including versions of Lorem
                     Ipsum.
                 </p>
-            </Box>
+            </Box> */}
+            <Player videoId={0}/>
         </Container>
     );
 };
