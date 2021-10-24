@@ -30,7 +30,7 @@ export const VideoPage = (props) => {
 
 const useStyles = makeStyles({
     wrapper: {
-        height: 'calc(100vh - 100px)',
+        height: 'calc(100vh - 130px)',
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

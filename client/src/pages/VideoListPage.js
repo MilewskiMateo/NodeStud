@@ -1,5 +1,6 @@
 import React from 'react';
 import '../App.css';
+import Container from "@material-ui/core/Container";
 import {Box} from "@material-ui/core";
 import {NavLink} from "react-router-dom";
 import {makeStyles} from "@material-ui/core/styles";
@@ -58,6 +59,79 @@ const mock = [
         id: 'asdadwd2',
         ulr: 'http:/www/awdwad',
         image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
+    },{
+        title: 'Loki',
+        id: 'asdadwd2',
+        ulr: 'http:/www/awdwad',
+        image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
+    }, {
+        title: 'Loki',
+        id: 'asdadwd',
+        ulr: 'http:/www/awdwad',
+        image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
+
+    }, {
+        title: 'Loki',
+        id: 'asdadwd1',
+        ulr: 'http:/www/awdwad',
+        image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
+
+    }, {
+        title: 'Loki',
+        id: 'asdadwd2',
+        ulr: 'http:/www/awdwad',
+        image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
+    }, {
+        title: 'Loki',
+        id: 'asdadwd',
+        ulr: 'http:/www/awdwad',
+        image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
+
+    }, {
+        title: 'Loki',
+        id: 'asdadwd1',
+        ulr: 'http:/www/awdwad',
+        image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
+
+    }, {
+        title: 'Loki',
+        id: 'asdadwd2',
+        ulr: 'http:/www/awdwad',
+        image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
+    }, {
+        title: 'Loki',
+        id: 'asdadwd',
+        ulr: 'http:/www/awdwad',
+        image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
+
+    }, {
+        title: 'Loki',
+        id: 'asdadwd1',
+        ulr: 'http:/www/awdwad',
+        image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
+
+    }, {
+        title: 'Loki',
+        id: 'asdadwd2',
+        ulr: 'http:/www/awdwad',
+        image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
+    }, {
+        title: 'Loki',
+        id: 'asdadwd',
+        ulr: 'http:/www/awdwad',
+        image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
+
+    }, {
+        title: 'Loki',
+        id: 'asdadwd1',
+        ulr: 'http:/www/awdwad',
+        image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
+
+    }, {
+        title: 'Loki',
+        id: 'asdadwd2',
+        ulr: 'http:/www/awdwad',
+        image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
     },
 ]
 export const VideoListPage = () => {
@@ -78,9 +152,8 @@ export const VideoListPage = () => {
     // 		});
     // }, [setAppState]);
     return (
-        <div className={classes.wrapper}>
+        <Container maxWidth='xl' className={classes.wrapper}>
             <Box className={classes.cardsWrapper}>
-
                 {mock.map(e => (
                         <Box component={NavLink} to='/video'>
                             <div className={classes.card} style={{backgroundImage: `url(${e.image})`}}>
@@ -90,26 +163,28 @@ export const VideoListPage = () => {
                 )}
             </Box>
 
-        </div>
+        </Container>
     );
 };
 
 const useStyles = makeStyles({
     wrapper: {
-        height: 'calc(100vh - 100px)',
+        height: 'calc(100vh - 130px)',
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        width: '100vw',
     },
     cardsWrapper: {
-        width: '100%',
+        height: 'calc(100vh - 160px)',
+        display: "grid",
+        gap:'30px',
         overflow: 'auto',
-        display: "flex",
-        padding: '40px 0',
+        gridTemplateColumns:'1fr 1fr 1fr 1fr',
+        padding: '20px',
 
         '&::-webkit-scrollbar': {
             height: '5px',
+            width: '5px',
         },
         '&::-webkit-scrollbar-track': {
             margin: ' 0 200px',
@@ -128,7 +203,6 @@ const useStyles = makeStyles({
         backgroundRepeat: 'no-repeat',
         backgroundAttachment: 'scroll',
         backgroundSize: 'cover',
-        marginRight: '30px',
         animation: `$rightEffect 500ms ease-out`,
         boxShadow: 'rgb(0 0 0 / 50%) 2px 2px 30px 1px',
     },

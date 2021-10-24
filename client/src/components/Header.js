@@ -26,7 +26,7 @@ export const Header = () => {
 
 const useStyles = makeStyles(() => ({
     appBar: {
-        marginTop: '10px',
+        margin: '10px auto 30px',
         border: `1px solid white`,
         display: 'flex',
         height: '50px',

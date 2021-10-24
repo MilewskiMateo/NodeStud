@@ -44,12 +44,10 @@ export const HomePage = () => {
 
 const useStyles = makeStyles({
     wrapper: {
-        height: 'calc(100vh - 100px)',
+        height: 'calc(100vh - 130px)',
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-evenly",
-        overflow: "hidden",
-        width: '100vw',
+        justifyContent: "center",
     },
     leftBox: {
         padding: '20px',
@@ -61,6 +59,7 @@ const useStyles = makeStyles({
         animation: `$rightEffect 500ms ease-out`,
         boxShadow: 'rgb(0 0 0 / 50%) 2px 2px 30px 1px',
         cursor: "pointer",
+        marginRight: '60px',
     },
     rightBox: {
         padding: '20px',
@@ -72,6 +71,7 @@ const useStyles = makeStyles({
         animation: `$rightEffect 500ms ease-out`,
         boxShadow: 'rgb(0 0 0 / 50%) 2px 2px 30px 1px',
         cursor: "pointer",
+       
     },
     "@keyframes rightEffect": {
         "0%": {
@@ -81,6 +81,5 @@ const useStyles = makeStyles({
             opacity: 1,
         }
     },
-    
 }, {name: 'HomePage'});
 
