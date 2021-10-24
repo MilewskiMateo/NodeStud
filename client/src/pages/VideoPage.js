@@ -8,8 +8,8 @@ export const VideoPage = (props) => {
     return (
         <Container className={classes.wrapper}>
             <Box className={classes.playerWrapper}>
-              <video controls crossOrigin="anonymous">
-                  <source src={`http://localhost:4000/video/${0}`} type="video/mp4"></source>
+              <video className={classes.video} controls crossOrigin="anonymous">
+                  <source src={`http://localhost:4000/video/${1}`} type="video/mp4"></source>
                   <track label="English" kind="captions" srcLang="en" src={`http://localhost:4000/video/${0}/caption`} default></track>
               </video>
             </Box>
@@ -37,17 +37,20 @@ const useStyles = makeStyles({
         gap: '60px',
     },
     playerWrapper:{
-        backgroundColor: '#FF9472',
-        width: '600px',
+        backgroundColor: 'transparent',
         height: '600px',
-        border: "1px solid white",
+
         boxShadow: 'rgb(0 0 0 / 50%) 2px 2px 30px 1px',
+    },
+    video: {
+        border: "1px solid white",
+        height: '600px',    
     },
     content: {
         color:'white',
         padding:'20px',
         backgroundColor: '#FF9472',
-        width: '300px',
+        minWidth: '400px',
         height: '600px',
         border: "1px solid white",
         wordWrap: 'break-word',
