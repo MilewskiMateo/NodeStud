@@ -39,7 +39,16 @@ const useStyles = makeStyles({
         height: '600px',
         border: "1px solid white",
         wordWrap: 'break-word',
+        animation: `$rightEffect 500ms ease-out`,
         boxShadow: 'rgb(0 0 0 / 50%) 2px 2px 30px 1px',
+    },
+    "@keyframes rightEffect": {
+        "0%": {
+            opacity: 0,
+        },
+        "100%": {
+            opacity: 1,
+        }
     },
 }, {name: 'HowPage'});
 

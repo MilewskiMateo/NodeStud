@@ -34,6 +34,7 @@ const useStyles = makeStyles({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        animation: `$rightEffect 500ms ease-out`,
         gap: '60px',
     },
     playerWrapper:{
@@ -44,7 +45,7 @@ const useStyles = makeStyles({
     },
     video: {
         border: "1px solid white",
-        height: '600px',    
+        height: '602px',    
     },
     content: {
         color:'white',
@@ -59,6 +60,14 @@ const useStyles = makeStyles({
         backgroundAttachment: 'scroll',
         backgroundSize: 'cover',
         boxShadow: 'rgb(0 0 0 / 50%) 2px 2px 30px 1px',
+    },
+    "@keyframes rightEffect": {
+        "0%": {
+            opacity: 0,
+        },
+        "100%": {
+            opacity: 1,
+        }
     },
 }, {name: 'HowPage'});
 

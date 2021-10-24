@@ -101,7 +101,6 @@ const useStyles = makeStyles({
         alignItems: "center",
         justifyContent: "center",
         width: '100vw',
-
     },
     cardsWrapper: {
         width: '100%',
@@ -130,7 +129,16 @@ const useStyles = makeStyles({
         backgroundAttachment: 'scroll',
         backgroundSize: 'cover',
         marginRight: '30px',
+        animation: `$rightEffect 500ms ease-out`,
         boxShadow: 'rgb(0 0 0 / 50%) 2px 2px 30px 1px',
+    },
+    "@keyframes rightEffect": {
+        "0%": {
+            opacity: 0,
+        },
+        "100%": {
+            opacity: 1,
+        }
     },
 }, {name: 'VideosPage'});
 

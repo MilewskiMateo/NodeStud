@@ -34,7 +34,7 @@ const useStyles = makeStyles(() => ({
         justifyContent: "space-between",
         backgroundColor: '#3B27BA',
         color: 'white',
-        fontSize: '40px'
+        fontSize: '40px',
     },
     logoWrapper: {
         height: '100%'
