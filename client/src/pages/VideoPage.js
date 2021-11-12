@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Container from "@material-ui/core/Container";
-import {Box, Typography} from "@material-ui/core";
+import {Box, Button, Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import * as faceApi from "face-api.js";
 
@@ -17,27 +17,39 @@ const expressionMap = {
 export const VideoPage = (props) => {
     const classes = useStyles();
     const videoRef = useRef()
+    const movieRef = useRef()
     const [emotion, setEmotion] = useState()
+    const [timestamps, setTimestamps] = useState([])
+    const [now, setNow] = useState(false);
+    const [info, setInfo] = useState(false);
 
     useEffect(() => {
-        async function fetchModel() {
-            await faceApi.nets.tinyFaceDetector.load('/models/')
-            await faceApi.loadFaceExpressionModel(`/models/`);
-            videoRef.current.srcObject = await navigator.mediaDevices.getUserMedia({
-                video: {facingMode: "user"}
-            });
-        }
+        if (now === true) {
+            async function fetchModel() {
+                await faceApi.nets.tinyFaceDetector.load('/models/')
+                await faceApi.loadFaceExpressionModel(`/models/`);
+                videoRef.current.srcObject = await navigator.mediaDevices.getUserMedia({
+                    video: {facingMode: "user"}
+                });
+            }
 
-        try {
-            fetchModel()
-        } catch (e) {
-            console.log('somthing wrong');
+            try {
+                fetchModel()
+            } catch (e) {
+                console.log('somthing wrong');
+            }
         }
-    }, [])
+    }, [now])
+
+    useEffect(() => {
+        if (emotion === 'happy') {
+            setTimestamps(prev => [...new Set([...prev, movieRef.current.currentTime])])
+        }
+    }, [emotion]);
 
 
     const onPlay = async () => {
-        console.log('look out')
+        // console.log('look out')
         if (!faceApi.nets.tinyFaceDetector.params) {
             return
         }
@@ -57,7 +69,7 @@ export const VideoPage = (props) => {
                     return acc[1] > current[1] ? acc : current
                 }, []
             )
-            setEmotion(expressionMap[max[0]])
+            setEmotion(max[0])
         }
 
     }
@@ -69,41 +81,64 @@ export const VideoPage = (props) => {
         }
     }, [])
 
+    const seekTo = (time) => {
+        movieRef.current.currentTime = time;
+    }
+
     return (
         <Container className={classes.wrapper}>
-            <Box className={classes.camera}>
-                <video
-                    ref={videoRef}
-                    style={{width: '360px', border: "1px solid white",}}
-                    autoPlay
-                    muted
-                    onPlay={onPlay}
-                />
-                <Typography variant="h4">
-                    Your emotion:
-                </Typography>
-                <Typography variant="h4">
-                    {emotion}
-                </Typography>
-            </Box>
+            {now ?
+                <Box className={classes.camera}>
+                    <video
+                        ref={videoRef}
+                        style={{width: '360px', border: "1px solid white",}}
+                        autoPlay
+                        muted
+                        onPlay={onPlay}
+                    />
+                    <Typography variant="h4">
+                        {expressionMap[emotion]}
+                    </Typography>
+                    <Box className={classes.stampsWrapper}>
+                        {timestamps.map(stamp =>
+                            <Box className={classes.timestampBox} onClick={() => {
+                                seekTo(stamp)
+                            }}>
+                                <Typography variant="h6">
+                                    {stamp}
+                                </Typography>
+                            </Box>
+                        )}
+                    </Box>
+                </Box>
+                :
+                <Button onClick={() => {
+                    setNow(true)
+                }} style={{color: 'white'}}>Open</Button>
+            }
             <Box className={classes.playerWrapper}>
-                <video className={classes.video} controls crossOrigin="anonymous">
-                    <source src={`http://localhost:4000/video/${1}`} type="video/mp4"/>
-                    <track label="English" kind="captions" srcLang="en" src={`http://localhost:4000/video/${0}/caption`}
+                <video className={classes.video} controls crossOrigin="anonymous" ref={movieRef}>
+                    <source src={`http://localhost:4000/video/${2}`} type="video/mp4"/>
+                    <track label="English" kind="captions" srcLang="en" src={`http://localhost:4000/video/${2}/caption`}
                            default/>
                 </video>
-
             </Box>
-            <Box className={classes.content}>
-                <h1>
-                    Welcome stranger!
-                </h1>
-                <p>
-                    Has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
-                    galley of type and scrambled it to make a type specimen book. It has survived not only five
-                    centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was
-                </p>
-            </Box>
+            {info ?
+                <Box className={classes.content}>
+                    <h1>
+                        Welcome stranger!
+                    </h1>
+                    <p>
+                        Has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
+                        galley of type and scrambled it to make a type specimen book. It has survived not only five
+                        centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It
+                        was
+                    </p>
+                </Box> :
+                <Button onClick={() => {
+                    setInfo(true)
+                }} style={{color: 'white'}}>Open</Button>
+            }
         </Container>
     );
 };
@@ -117,6 +152,7 @@ const useStyles = makeStyles({
         justifyContent: "center",
         animation: `$rightEffect 500ms ease-out`,
         gap: '60px',
+        overflow: 'hidden',
     },
     playerWrapper: {
         backgroundColor: 'transparent',
@@ -128,14 +164,13 @@ const useStyles = makeStyles({
         border: "1px solid white",
         height: '602px',
         maxWidth: '800px',
-        // display: 'none',
-        // visibility: 'hidden',
+        backgroundColor: 'black'
     },
     content: {
         color: 'white',
         padding: '20px',
         backgroundColor: '#FF9472',
-        minWidth: '400px',
+        width: '400px',
         height: '600px',
         border: "1px solid white",
         wordWrap: 'break-word',
@@ -144,14 +179,10 @@ const useStyles = makeStyles({
         backgroundAttachment: 'scroll',
         backgroundSize: 'cover',
         boxShadow: 'rgb(0 0 0 / 50%) 2px 2px 30px 1px',
-    },
-    "@keyframes rightEffect": {
-        "0%": {
-            opacity: 0,
-        },
-        "100%": {
-            opacity: 1,
-        }
+        position: 'absolute',
+        right: '-400px',
+        animation: '$leftEffect 0.5s forwards',
+        animationDelay: '1s',
     },
     camera: {
         padding: '20px',
@@ -160,7 +191,37 @@ const useStyles = makeStyles({
         height: '600px',
         border: "1px solid white",
         boxShadow: 'rgb(0 0 0 / 50%) 2px 2px 30px 1px',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'absolute',
+        left: '-450px',
+        animation: '$rightEffect 0.5s forwards',
+        animationDelay: '2s',
     },
+    "@keyframes rightEffect": {
+        "100%": {
+            left: 0
+        }
+    },
+    "@keyframes leftEffect": {
+        "100%": {
+            right: 0
+        }
+    },
+    stampsWrapper: {
+        overflow: 'auto',
+        display: 'flex',
+        flexDirection: ' column',
+        paddingRight: '15px',
+    },
+    timestampBox: {
+        backgroundColor: '#3b27ba',
+        color: 'white',
+        borderRadius: '3px',
+        border: '0.5px solid white',
+        marginTop: '6px',
+        padding: '4px',
+    }
 }, {name: 'HowPage'});
 
 

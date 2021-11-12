@@ -1,0 +1,4 @@
+#Run server
+`npm install`
+
+`node app.js`

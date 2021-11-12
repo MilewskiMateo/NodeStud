@@ -12,7 +12,9 @@ import {VideoPage} from "./pages/VideoPage";
 const routing = (
     <Router>
         <Header/>
-        <Switch>
+        <Switch style={{
+            overflow: 'hidden',
+        }}>
             <Route exact path="/" component={HomePage}/>
             <Route exact path="/videos" component={VideoListPage}/>
             <Route exact path="/how" component={HowPage}/>
