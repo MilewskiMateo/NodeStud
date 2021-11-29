@@ -20,7 +20,7 @@ const routing = (
             <Route exact path="/how" component={HowPage}/>
             <Route exact path="/video" component={VideoPage}/>
         </Switch>
-        <Footer/>
+        {/*<Footer/>*/}
     </Router>
 );
 

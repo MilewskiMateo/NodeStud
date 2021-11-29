@@ -1,17 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Container from '@material-ui/core/Container';
-import { Box, Button, Typography } from '@material-ui/core';
+import { Box, Button, Typography, IconButton } from '@material-ui/core';
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { makeStyles } from '@material-ui/core/styles';
 import * as faceApi from 'face-api.js';
 
 const expressionMap = {
-  neutral: ' neutral 😶',
-  happy: ' happy 😄',
-  sad: 'sad 😞',
-  angry: 'angry 🤬',
-  fearful: 'fearful 😖',
-  disgusted: 'disgusted 🤢',
-  surprised: 'surprised 😲',
+  neutral: 'neutral',
+  happy: 'happy',
+  sad: 'sad',
+  angry: 'angry',
+  fearful: 'fearful',
+  disgusted: 'disgusted',
+  surprised: 'surprised',
 };
 
 export const VideoPage = () => {
@@ -22,17 +24,24 @@ export const VideoPage = () => {
   const [timestamps, setTimestamps] = useState([]);
   const [now, setNow] = useState(false);
   const [info, setInfo] = useState(false);
-  const stream = useRef(false)
+  const [leftStyle, setLeftStyle] = useState(classes.camera);
+  const [rightStyle, setRightStyle] = useState(classes.content);
+  const stream = useRef(false);
 
   useEffect(() => {
     if (now === true) {
+
       async function fetchModel() {
-        await faceApi.nets.tinyFaceDetector.load('/models/');
-        await faceApi.loadFaceExpressionModel('/models/');
+        try {
+          await faceApi.nets.tinyFaceDetector.load('/models/');
+          await faceApi.loadFaceExpressionModel('/models/');
           stream.current = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'user' },
-        });
-        videoRef.current.srcObject = stream.current
+            video: { facingMode: 'user' },
+          });
+          videoRef.current.srcObject = stream.current;
+        } catch (e) {
+          console.log(e);
+        }
       }
 
       try {
@@ -50,6 +59,13 @@ export const VideoPage = () => {
   }, [emotion]);
 
   useEffect(() => {
+    return () => {
+      stop();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     let time;
     if (now) {
       time = setInterval(() => onPlay(), 300);
@@ -59,14 +75,29 @@ export const VideoPage = () => {
     };
   }, [now]);
 
-  const stop = () => {
-    stream.current.getTracks().forEach(function(track) {
-      track.stop();
-    });
+  const closeFace = () => {
+    setLeftStyle(classes.cameraOut);
+    setTimeout(() => stop(), 500);
+  };
 
-    videoRef.current.srcObject = null;
-    setNow(false)
-  }
+  const stop = () => {
+    if (stream && stream.current && stream.current.getTracks) {
+      stream.current.getTracks()
+        .forEach(function (track) {
+          track.stop();
+        });
+
+      setNow(false);
+      setLeftStyle(classes.camera);
+    }
+  };
+  const closeInfo = () => {
+    setRightStyle(classes.contentOut);
+    setTimeout(() => {
+      setInfo(false);
+      setRightStyle(classes.content);
+    }, 500);
+  };
 
   const seekTo = (time) => {
     movieRef.current.currentTime = time;
@@ -98,19 +129,17 @@ export const VideoPage = () => {
     <Container className={classes.wrapper}>
       {now
         ? (
-          <Box className={classes.camera}>
-            <Button onClick={stop}> Close </Button>
+          <Box className={leftStyle}>
+            <IconButton onClick={closeFace}
+                        className={classes.leftClose}><KeyboardArrowLeftIcon/></IconButton>
             <video
               ref={videoRef}
-              style={{
-                width: '360px',
-                border: '1px solid white',
-              }}
+              className={classes.faceVideo}
               autoPlay
               muted
               onPlay={onPlay}
             />
-            <Typography variant="h4">
+            <Typography className={classes.emotion}>
               {expressionMap[emotion]}
             </Typography>
             <Box className={classes.stampsWrapper}>
@@ -136,7 +165,7 @@ export const VideoPage = () => {
             className={classes.leftOpen}
             variant="outlined"
           >
-            Open Camera
+            <KeyboardArrowRightIcon fontSize='large'/>
           </Button>
         )}
       <Box className={classes.playerWrapper}>
@@ -153,7 +182,9 @@ export const VideoPage = () => {
       </Box>
       {info
         ? (
-          <Box className={classes.content}>
+          <Box className={rightStyle}>
+            <IconButton onClick={closeInfo}
+                        className={classes.rightClose}><KeyboardArrowRightIcon/></IconButton>
             <h1>
               Welcome stranger!
             </h1>
@@ -176,7 +207,7 @@ export const VideoPage = () => {
             className={classes.rightOpen}
             variant="outlined"
           >
-            Info
+            <KeyboardArrowLeftIcon fontSize='large'/>
           </Button>
         )}
     </Container>
@@ -205,6 +236,11 @@ const useStyles = makeStyles({
     maxWidth: '800px',
     backgroundColor: 'black',
   },
+  faceVideo: {
+    width: '380px',
+    height: '285px',
+    border: '1px solid white',
+  },
   content: {
     color: 'white',
     padding: '20px',
@@ -222,9 +258,42 @@ const useStyles = makeStyles({
     right: '-400px',
     animation: '$leftEffect 0.5s forwards',
   },
-  camera: {
+  contentOut: {
+    color: 'white',
     padding: '20px',
     backgroundColor: '#FF9472',
+    width: '400px',
+    height: '600px',
+    border: '1px solid white',
+    wordWrap: 'break-word',
+    backgroundImage: 'url(https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg)',
+    backgroundRepeat: 'no-repeat',
+    backgroundAttachment: 'scroll',
+    backgroundSize: 'cover',
+    boxShadow: 'rgb(0 0 0 / 50%) 2px 2px 30px 1px',
+    position: 'absolute',
+    right: '40px',
+    animation: '$rightEffectClose 0.5s forwards',
+  },
+  emotion: {
+    position: 'absolute',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#3b27ba',
+    color: 'white',
+    top: 10,
+    right: 10,
+    borderRadius: '0px 0px 0px 10px',
+    padding: '5px',
+    fontSize: '20px',
+    width: '100px',
+    height: '32px',
+    border: '1px solid white',
+  },
+  camera: {
+    padding: '10px',
+    backgroundColor: 'black',
     minWidth: '400px',
     height: '600px',
     border: '1px solid white',
@@ -235,6 +304,19 @@ const useStyles = makeStyles({
     left: '-450px',
     animation: '$rightEffect 0.5s forwards',
   },
+  cameraOut: {
+    padding: '20px',
+    backgroundColor: '#FF9472',
+    minWidth: '400px',
+    height: '600px',
+    border: '1px solid white',
+    boxShadow: 'rgb(0 0 0 / 50%) 2px 2px 30px 1px',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'absolute',
+    left: '40px',
+    animation: '$leftEffectClose 0.5s forwards',
+  },
   '@keyframes rightEffect': {
     '100%': {
       left: 40,
@@ -243,6 +325,16 @@ const useStyles = makeStyles({
   '@keyframes leftEffect': {
     '100%': {
       right: 40,
+    },
+  },
+  '@keyframes leftEffectClose': {
+    '100%': {
+      left: '-400px',
+    },
+  },
+  '@keyframes rightEffectClose': {
+    '100%': {
+      right: '-400px',
     },
   },
   stampsWrapper: {
@@ -260,13 +352,42 @@ const useStyles = makeStyles({
     padding: '4px',
   },
   leftOpen: {
+    height: '300px',
+    minWidth: '32px',
+    padding: '0px',
     color: 'white',
     position: 'absolute',
-    left: 40,
+    left: 10,
+  },
+  leftClose: {
+    position: 'absolute',
+    backgroundColor: '#3b27ba',
+    color: 'white',
+    padding: '5px',
+    zIndex: 10,
+    left: 10,
+    top: 10,
+    borderRadius: '0px 0px 10px 0px',
+    border: '1px solid white'
   },
   rightOpen: {
+    height: '300px',
+    minWidth: '32px',
+    padding: '0px',
     color: 'white',
     position: 'absolute',
-    right: 40,
+    right: 10,
   },
+  rightClose: {
+    position: 'absolute',
+    backgroundColor: '#3b27ba',
+    color: 'white',
+    padding: '5px',
+    zIndex: 10,
+    right: 0,
+    top: 0,
+    borderRadius: '0px 0px 0px 10px',
+    borderBottom: '1px solid white',
+    borderLeft: '1px solid white',
+  }
 }, { name: 'HowPage' });
