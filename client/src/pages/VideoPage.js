@@ -220,9 +220,17 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    animation: '$rightEffect 500ms ease-out',
     gap: '60px',
     overflow: 'hidden',
+    animation: `$appear 500ms ease-out`,
+  },
+  '@keyframes appear': {
+    '0%': {
+      opacity: 0,
+    },
+    '100%': {
+      opacity: 1,
+    }
   },
   playerWrapper: {
     backgroundColor: 'transparent',
@@ -302,7 +310,6 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     position: 'absolute',
     left: '-450px',
-    animation: '$rightEffect 0.5s forwards',
   },
   cameraOut: {
     padding: '20px',

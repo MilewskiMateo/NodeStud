@@ -184,6 +184,15 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    animation: `$appear 500ms ease-out`,
+  },
+  '@keyframes appear': {
+    '0%': {
+      opacity: 0,
+    },
+    '100%': {
+      opacity: 1,
+    }
   },
   buttonWrapper: {
     display: 'flex',
@@ -206,16 +215,7 @@ const useStyles = makeStyles({
     backgroundRepeat: 'no-repeat',
     backgroundAttachment: 'scroll',
     backgroundSize: 'cover',
-    animation: `$rightEffect 500ms ease-out`,
     boxShadow: 'rgb(0 0 0 / 50%) 2px 2px 30px 1px',
-  },
-  '@keyframes rightEffect': {
-    '0%': {
-      opacity: 0,
-    },
-    '100%': {
-      opacity: 1,
-    }
   },
 }, { name: 'VideosPage' });
 

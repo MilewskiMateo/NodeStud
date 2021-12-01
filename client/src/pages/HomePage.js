@@ -50,23 +50,21 @@ const useStyles = makeStyles({
     height: 'calc(100vh - 130px)',
     display: 'flex',
     alignItems: 'center',
+    animation: `$appear 500ms ease-out`,
+  },
+  '@keyframes appear': {
+    '0%': {
+      opacity: 0,
+    },
+    '100%': {
+      opacity: 1,
+    }
   },
   leftBox: {
     color: 'white',
     marginLeft: '140px',
     display: 'flex',
     flexDirection: 'column',
-  },
-  rightBox: {
-    padding: '20px',
-    backgroundColor: '#FF9472',
-    width: '400px',
-    height: '400px',
-    border: '1px solid white',
-    wordWrap: 'break-word',
-    animation: '$rightEffect 500ms ease-out',
-    boxShadow: 'rgb(0 0 0 / 50%) 2px 2px 30px 1px',
-    cursor: 'pointer',
   },
   startNow: {
     marginTop: '30px',
@@ -80,12 +78,5 @@ const useStyles = makeStyles({
     fontFamily: 'Roboto',
     fontWeight: 700,
   },
-  '@keyframes rightEffect': {
-    '0%': {
-      opacity: 0,
-    },
-    '100%': {
-      opacity: 1,
-    },
-  },
+
 }, { name: 'HomePage' });
