@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import '../App.css';
 import Container from '@material-ui/core/Container';
-import { Box, Button } from '@material-ui/core';
+import { Box, IconButton } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
 // import Posts from '../components/Posts';
 // import PostLoadingComponent from '../components/PostLoading';
 
@@ -48,95 +51,14 @@ const mock = [
     ulr: 'http:/www/awdwad',
     image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
 
-  }, {
-    title: 'Loki',
-    id: 'asdadwd1',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-
-  }, {
-    title: 'Loki',
-    id: 'asdadwd2',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-  }, {
-    title: 'Loki',
-    id: 'asdadwd2',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-  }, {
-    title: 'Loki',
-    id: 'asdadwd',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-
-  }, {
-    title: 'Loki',
-    id: 'asdadwd1',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-
-  }, {
-    title: 'Loki',
-    id: 'asdadwd2',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-  }, {
-    title: 'Loki',
-    id: 'asdadwd',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-
-  }, {
-    title: 'Loki',
-    id: 'asdadwd1',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-
-  }, {
-    title: 'Loki',
-    id: 'asdadwd2',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-  }, {
-    title: 'Loki',
-    id: 'asdadwd',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-
-  }, {
-    title: 'Loki',
-    id: 'asdadwd1',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-
-  }, {
-    title: 'Loki',
-    id: 'asdadwd2',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-  }, {
-    title: 'Loki',
-    id: 'asdadwd',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-
-  }, {
-    title: 'Loki',
-    id: 'asdadwd1',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-
-  }, {
-    title: 'Loki',
-    id: 'asdadwd2',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
   },
 ];
 export const VideoListPage = () => {
   const classes = useStyles();
-  const [begin, setBegin] = useState(0);
+  const [bounds, setBounds] = useState({
+    begin: 0,
+    end: 3
+  });
   // const PostLoading = PostLoadingComponent(Posts);
   // const [appState, setAppState] = useState({
   // 	loading: false,
@@ -152,15 +74,33 @@ export const VideoListPage = () => {
   // 			setAppState({ loading: false, posts: posts });
   // 		});
   // }, [setAppState]);
+  const increase = () => {
+    setBounds(prevState => {
+      return {
+        begin: prevState.begin + 3,
+        end: prevState.end + 3,
+      };
+    });
+  };
+
+  const decrease = () => {
+    setBounds(prevState => {
+      return {
+        begin: prevState.begin - 3,
+        end: prevState.end - 3,
+      };
+    });
+  };
   return (
     <Container maxWidth="xl" className={classes.wrapper}>
       <Box className={classes.cardsWrapper}>
         <Box className={classes.buttonWrapper}>
 
-          <Button className={classes.scrollButton}> Left</Button>
+          <IconButton className={classes.scrollButton} disabled={bounds.begin <= 0}
+                      onClick={decrease}> <ArrowBackIcon/></IconButton>
         </Box>
         {mock.map((e, idx) => (
-            idx <= (begin + 3) ?
+            (idx <= (bounds.end) && idx >= (bounds.begin)) ?
               <Box component={NavLink} to="/video">
                 <div className={classes.card} style={{ backgroundImage: `url(${e.image})` }}>
                 </div>
@@ -169,7 +109,8 @@ export const VideoListPage = () => {
           )
         )}
         <Box className={classes.buttonWrapper}>
-          <Button className={classes.scrollButton}> Right</Button>
+          <IconButton className={classes.scrollButton} disabled={bounds.end >= mock.length}
+                      onClick={increase}> <ArrowForwardIcon/></IconButton>
         </Box>
       </Box>
 
@@ -201,7 +142,10 @@ const useStyles = makeStyles({
   },
   scrollButton: {
     backgroundColor: 'red',
-    color: 'white'
+    color: 'white',
+    height: '60px',
+    width: '60px',
+    borderRadius: '100%',
   },
   cardsWrapper: {
     display: 'flex',

@@ -7,6 +7,7 @@ import SlideshowIcon from '@mui/icons-material/Slideshow';
 import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';
 import CelebrationIcon from '@mui/icons-material/Celebration';
 import { Typography } from '@mui/material';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 export const HowPage = () => {
   const classes = useStyles();
@@ -45,9 +46,25 @@ export const HowPage = () => {
           <Typography> Some text lorem ipusm strata tata.Some text lorem ipusm strata tata.Some text
             lorem ipusm strata tata.Some text lorem ipusm strata tata.</Typography>
         </Box>
-        <Box className={classes.line} sx={{left: '360px', top:'180px', width: '300px'}}/>
-        <Box className={classes.line} sx={{top: '50%', left: '50%', transform: 'translate(-50%, -50%) rotate(-34deg)', width: '320px',}}/>
-        <Box className={classes.line} sx={{left: '360px', bottom:'100px', width: '300px'}}/>
+        <ArrowForwardIcon className={classes.line} sx={{
+          height: '100px',
+          width: '100px',
+          left: '460px',
+          top: '80px',
+        }}/>
+        <ArrowForwardIcon className={classes.line} sx={{
+          height: '100px',
+          width: '100px',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%) rotate(135deg)',
+        }}/>
+        <ArrowForwardIcon className={classes.line} sx={{
+          height: '100px',
+          width: '100px',
+          left: '460px',
+          bottom: '100px',
+        }}/>
       </Box>
     </Container>
   );
@@ -56,8 +73,9 @@ export const HowPage = () => {
 const useStyles = makeStyles({
   line: {
     position: 'absolute',
-    height: '6px',
-    backgroundColor: 'red'
+    height: '100px',
+    width: '100px',
+    color: 'white',
   },
   iconWrapper: {
     border: '6px solid red',

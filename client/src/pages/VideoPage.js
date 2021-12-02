@@ -5,6 +5,8 @@ import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { makeStyles } from '@material-ui/core/styles';
 import * as faceApi from 'face-api.js';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const expressionMap = {
   neutral: 'neutral',
@@ -160,13 +162,12 @@ export const VideoPage = () => {
           </Box>
         )
         : (
-          <Button
+          <IconButton
             onClick={() => setNow(true)}
             className={classes.leftOpen}
-            variant="outlined"
           >
-            <KeyboardArrowRightIcon fontSize='large'/>
-          </Button>
+            <ArrowForwardIcon/>
+          </IconButton>
         )}
       <Box className={classes.playerWrapper}>
         <video className={classes.video} controls crossOrigin="anonymous" ref={movieRef}>
@@ -200,15 +201,13 @@ export const VideoPage = () => {
           </Box>
         )
         : (
-          <Button
+          <IconButton
+            className={classes.rightOpen}
             onClick={() => {
               setInfo(true);
-            }}
-            className={classes.rightOpen}
-            variant="outlined"
-          >
-            <KeyboardArrowLeftIcon fontSize='large'/>
-          </Button>
+            }}>
+            <ArrowBackIcon/>
+          </IconButton>
         )}
     </Container>
   );
@@ -301,7 +300,8 @@ const useStyles = makeStyles({
   },
   camera: {
     padding: '10px',
-    backgroundColor: 'black',
+    // backgroundColor: 'gray',
+    background: 'linear-gradient(315deg, #2f4353 0%, #333333 74%)',
     minWidth: '400px',
     height: '600px',
     border: '1px solid white',
@@ -310,10 +310,11 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     position: 'absolute',
     left: '-450px',
+    animation: '$rightEffect 0.5s forwards',
   },
   cameraOut: {
-    padding: '20px',
-    backgroundColor: '#FF9472',
+    padding: '10px',
+    backgroundColor: 'black',
     minWidth: '400px',
     height: '600px',
     border: '1px solid white',
@@ -345,10 +346,12 @@ const useStyles = makeStyles({
     },
   },
   stampsWrapper: {
-    overflow: 'auto',
+    overflowY: 'auto',
     display: 'flex',
     flexDirection: ' column',
-    paddingRight: '15px',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
   },
   timestampBox: {
     backgroundColor: '#3b27ba',
@@ -359,8 +362,10 @@ const useStyles = makeStyles({
     padding: '4px',
   },
   leftOpen: {
-    height: '300px',
-    minWidth: '32px',
+    height: '30px',
+    width: '30px',
+    borderRadius: '100%',
+    backgroundColor: 'red',
     padding: '0px',
     color: 'white',
     position: 'absolute',
@@ -378,8 +383,10 @@ const useStyles = makeStyles({
     border: '1px solid white'
   },
   rightOpen: {
-    height: '300px',
-    minWidth: '32px',
+    height: '30px',
+    width: '30px',
+    borderRadius: '100%',
+    backgroundColor: 'red',
     padding: '0px',
     color: 'white',
     position: 'absolute',
