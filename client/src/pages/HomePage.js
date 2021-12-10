@@ -47,7 +47,7 @@ export const HomePage = function () {
 
 const useStyles = makeStyles({
   wrapper: {
-    height: 'calc(100vh - 130px)',
+    height: 'calc(100vh - 70px)',
     display: 'flex',
     alignItems: 'center',
     animation: `$appear 500ms ease-out`,

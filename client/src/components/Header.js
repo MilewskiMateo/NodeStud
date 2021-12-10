@@ -1,8 +1,5 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import logo from '../assets/logo.png';
-// import logoTrans from '../assets/logoTrans.png'
 import { Link } from 'react-router-dom';
 import { Box } from '@material-ui/core';
 
@@ -10,11 +7,8 @@ export const Header = () => {
   const classes = useStyles();
   return (
     <Box className={classes.appBar}>
-      {/*<Link to="/" className={classes.logoWrapper}>*/}
-      {/*  <img src={logo} alt="Logo" className={classes.logo}/>*/}
-      {/*</Link>*/}
       <Link to="/" className={classes.links}>
-        Home
+        VideoSpace
       </Link>
       <Box className={classes.menu}>
         <Link to="/how" className={classes.links}>
@@ -25,6 +19,12 @@ export const Header = () => {
         </Link>
         <Link to="/contact" className={classes.links}>
           Contact
+        </Link>
+        <Link to="/register" className={classes.links}>
+          Register
+        </Link>
+        <Link to="/login" className={classes.links}>
+          Login
         </Link>
       </Box>
     </Box>

@@ -100,7 +100,7 @@ const useStyles = makeStyles({
     color: 'white',
   },
   wrapper: {
-    height: 'calc(100vh - 130px)',
+    height: 'calc(100vh - 70px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

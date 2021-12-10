@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../App.css';
 import Container from '@material-ui/core/Container';
 import { Box, IconButton } from '@material-ui/core';
@@ -6,74 +6,23 @@ import { NavLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import axios from 'axios';
 
-// import Posts from '../components/Posts';
-// import PostLoadingComponent from '../components/PostLoading';
-
-const mock = [
-  {
-    title: 'Loki',
-    id: 'asdadwd',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-
-  }, {
-    title: 'Capitan Marvel',
-    id: 'asdadwd1',
-    ulr: 'http:/www/awdwad',
-    image: 'https://static.posters.cz/image/750/plakaty/captain-marvel-epic-i71851.jpg',
-
-  }, {
-    title: 'Guardian of the Galaxy',
-    id: 'asdadwd2',
-    ulr: 'http:/www/awdwad',
-    image: 'https://m.media-amazon.com/images/I/71pAQsmvQyL._AC_SL1000_.jpg',
-  }, {
-    title: 'Infinty Gauntlet',
-    id: 'asdadwd',
-    ulr: 'http:/www/awdwad',
-    image: 'https://static.posters.cz/image/750/plakaty/marvel-retro-the-infinity-gauntlet-i59015.jpg',
-
-  }, {
-    title: 'Loki',
-    id: 'asdadwd1',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-
-  }, {
-    title: 'Loki',
-    id: 'asdadwd2',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-  }, {
-    title: 'Loki',
-    id: 'asdadwd',
-    ulr: 'http:/www/awdwad',
-    image: 'https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg',
-
-  },
-];
 export const VideoListPage = () => {
   const classes = useStyles();
   const [bounds, setBounds] = useState({
     begin: 0,
     end: 3
   });
-  // const PostLoading = PostLoadingComponent(Posts);
-  // const [appState, setAppState] = useState({
-  // 	loading: false,
-  // 	posts: null,
-  // });
+  const [mock, setMock] = useState([]);
 
-  // useEffect(() => {
-  // 	setAppState({ loading: true });
-  // 	const apiUrl = `http://127.0.0.1/api/`;
-  // 	fetch(apiUrl)
-  // 		.then((data) => data.json())
-  // 		.then((posts) => {
-  // 			setAppState({ loading: false, posts: posts });
-  // 		});
-  // }, [setAppState]);
+  useEffect(() => {
+    axios.get('http://localhost:8080/videos')
+      .then((reponse) => {
+        setMock(reponse.data);
+      });
+  }, []);
+
   const increase = () => {
     setBounds(prevState => {
       return {
@@ -121,7 +70,7 @@ export const VideoListPage = () => {
 
 const useStyles = makeStyles({
   wrapper: {
-    height: 'calc(100vh - 130px)',
+    height: 'calc(100vh - 70px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

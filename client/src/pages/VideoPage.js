@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Container from '@material-ui/core/Container';
-import { Box, Button, Typography, IconButton } from '@material-ui/core';
+import { Box, Button, Typography, IconButton, CircularProgress } from '@material-ui/core';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { makeStyles } from '@material-ui/core/styles';
 import * as faceApi from 'face-api.js';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const expressionMap = {
   neutral: 'neutral',
@@ -28,6 +30,9 @@ export const VideoPage = () => {
   const [info, setInfo] = useState(false);
   const [leftStyle, setLeftStyle] = useState(classes.camera);
   const [rightStyle, setRightStyle] = useState(classes.content);
+  const [ended, setEnded] = useState(false);
+  const [startGenerating, setStartGenerating] = useState(false);
+  const [address, setAddress] = useState();
   const stream = useRef(false);
 
   useEffect(() => {
@@ -127,6 +132,26 @@ export const VideoPage = () => {
     }
   };
 
+  const onEnding = () => {
+    setEnded(true);
+  };
+
+  const generate = () => {
+    setStartGenerating(true);
+
+    axios.post('http://127.0.0.1:8080/generate', {
+      timestamps: timestamps,
+    }, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` }
+    })
+      .then(function (response) {
+        setAddress('/compilation/' + response.data.address)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   return (
     <Container className={classes.wrapper}>
       {now
@@ -170,34 +195,15 @@ export const VideoPage = () => {
           </IconButton>
         )}
       <Box className={classes.playerWrapper}>
-        <video className={classes.video} controls crossOrigin="anonymous" ref={movieRef}>
-          <source src={`http://localhost:4000/video/${2}`} type="video/mp4"/>
-          <track
-            label="English"
-            kind="captions"
-            srcLang="en"
-            src={`http://localhost:4000/video/${2}/caption`}
-            default
-          />
+        <video className={classes.video} controls crossOrigin="anonymous" controlsList="nofullscreen nodownload"
+               onEnded={onEnding} ref={movieRef}>
+          <source src={'http://127.0.0.1:8080/video'} type="video/mp4"/>
         </video>
       </Box>
       {info
         ? (
           <Box className={rightStyle}>
-            <IconButton onClick={closeInfo}
-                        className={classes.rightClose}><KeyboardArrowRightIcon/></IconButton>
-            <h1>
-              Welcome stranger!
-            </h1>
-            <p>
-              Has been the industry standard dummy text ever since the 1500s, when an unknown
-              printer took a
-              galley of type and scrambled it to make a type specimen book. It has survived not only
-              five
-              centuries, but also the leap into electronic typesetting, remaining essentially
-              unchanged. It
-              was
-            </p>
+            <IconButton onClick={closeInfo} className={classes.rightClose}><KeyboardArrowRightIcon/></IconButton>
           </Box>
         )
         : (
@@ -209,19 +215,47 @@ export const VideoPage = () => {
             <ArrowBackIcon/>
           </IconButton>
         )}
+      {ended &&
+      <Box className={classes.endedWrapper}>
+        <Button onClick={generate} className={classes.generateButton}>
+          Generate compilation
+        </Button>
+        {startGenerating && (address ?
+          <Link to={address}> Compilation </Link>
+          : <CircularProgress size={26} className={classes.spiner}/>)}
+      </Box>
+      }
     </Container>
   );
 };
 
 const useStyles = makeStyles({
   wrapper: {
-    height: 'calc(100vh - 130px)',
+    height: 'calc(100vh - 70px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     gap: '60px',
     overflow: 'hidden',
     animation: `$appear 500ms ease-out`,
+  },
+  spiner: {
+    color: 'white',
+  },
+  endedWrapper: {
+    position: 'absolute',
+    bottom: 40,
+    left: '50%',
+    backgroundColor: 'red',
+    borderRadius: '20px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '10px',
+    transform: 'translateX(-50%)',
+  },
+  generateButton: {
+    color: 'white'
   },
   '@keyframes appear': {
     '0%': {
