@@ -1,14 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Typography } from '@material-ui/core';
 import { EmialIcon } from '../components/Icons/EmialIcon';
+import axios from 'axios';
+import { useAuth } from '../components/AuthProvider';
 
 export const ContactPage = () => {
   const classes = useStyles();
+
+  const {token, setToken} = useAuth();
+  useEffect(() => {
+    axios.get('http://localhost:8080/token',{
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(function (response) {
+        setToken(response.data)
+      })
+      .catch(function (error) {
+        if(error.response.data.msg === "Token has expired"){
+          setToken('')
+        }
+      });
+  },[])
+
   return (
     <Box className={classes.wrapper}>
-      <Typography className={classes.paragraph}> Do you have some questions?</Typography>
+      <Typography className={classes.header}> Masz jakieś pytania?</Typography>
       <Box className={classes.flexWrapper}>
         <Box className={classes.leftBox}>
           <EmialIcon style={{
@@ -17,9 +35,7 @@ export const ContactPage = () => {
           }}/>
         </Box>
         <Box className={classes.rightBox}>
-          <Typography className={classes.paragraph}> Thiwadwadwa dwad wad awd wad waiiontegr oierg
-            roein rong rweib ejrngi eqger bqiergb eing eqirng qeiurgb qerlhjg jqekrga
-            kreqjlgkqej</Typography>
+          <Typography className={classes.paragraph}> Projekt ten został wykonany w ramach pracy inżynierskiej. Praca to była tworza na Politechnice Warszawskiej na wydziale Elektrycznym. Jeśli ciekawi cię więcej na jej temat z kontaktuj się z twórcą. </Typography>
           <Typography className={classes.paragraph}> Email: maewfws23@gmail.com </Typography>
           <Typography className={classes.paragraph}> phone: +45 231 232 534</Typography>
         </Box>
@@ -35,6 +51,15 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    animation: `$appear 500ms ease-in`,
+  },
+  '@keyframes appear': {
+    '0%': {
+      opacity: 0,
+    },
+    '100%': {
+      opacity: 1,
+    }
   },
   flexWrapper: {
     display: 'flex',
@@ -50,11 +75,17 @@ const useStyles = makeStyles({
     color: 'white',
     overflow: 'hidden',
   },
+  header: {
+    color: 'white',
+    fontFamily: 'Roboto',
+    fontWeight: 600,
+    fontSize: '34px',
+  },
   paragraph: {
     color: 'white',
     fontFamily: 'Roboto',
     fontWeight: 600,
-    marginBottom: '20px',
+    marginBottom: '10px',
   },
   icon: {
     fontSize: '40px',

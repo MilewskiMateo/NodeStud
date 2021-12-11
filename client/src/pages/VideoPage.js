@@ -141,14 +141,12 @@ export const VideoPage = () => {
 
     axios.post('http://127.0.0.1:8080/generate', {
       timestamps: timestamps,
-    }, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('jwt')}` }
     })
       .then(function (response) {
         setAddress('/compilation/' + response.data.address)
       })
       .catch(function (error) {
-        console.log(error);
+        console.log(error.response.data);
       });
   };
 
@@ -215,7 +213,7 @@ export const VideoPage = () => {
             <ArrowBackIcon/>
           </IconButton>
         )}
-      {ended &&
+      {ended && timestamps.length > 0 &&
       <Box className={classes.endedWrapper}>
         <Button onClick={generate} className={classes.generateButton}>
           Generate compilation
@@ -237,7 +235,7 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     gap: '60px',
     overflow: 'hidden',
-    animation: `$appear 500ms ease-out`,
+    animation: `$appear 500ms ease-in`,
   },
   spiner: {
     color: 'white',

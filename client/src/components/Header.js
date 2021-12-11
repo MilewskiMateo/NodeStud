@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import { Box } from '@material-ui/core';
+import { useAuth } from './AuthProvider';
 
 export const Header = () => {
   const classes = useStyles();
+
+  const {token, setToken} = useAuth();
+
   return (
     <Box className={classes.appBar}>
       <Link to="/" className={classes.links}>
@@ -14,18 +18,22 @@ export const Header = () => {
         <Link to="/how" className={classes.links}>
           How
         </Link>
-        <Link to="/videos" className={classes.links}>
-          Videos
-        </Link>
         <Link to="/contact" className={classes.links}>
           Contact
         </Link>
-        <Link to="/register" className={classes.links}>
-          Register
-        </Link>
-        <Link to="/login" className={classes.links}>
-          Login
-        </Link>
+        {token !== '' ?
+          <Link to="/videos" className={classes.links}>
+            Videos
+          </Link> :
+          <>
+            <Link to="/register" className={classes.links}>
+              Register
+            </Link>
+            <Link to="/login" className={classes.links}>
+              Login
+            </Link>
+          </>
+        }
       </Box>
     </Box>
   );

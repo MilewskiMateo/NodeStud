@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Container from '@material-ui/core/Container';
 import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import axios from 'axios';
+import { useAuth } from '../components/AuthProvider';
 
 export const CompilationPage = ({ match }) => {
   const classes = useStyles();
+
+  const {token, setToken} = useAuth();
+  useEffect(() => {
+    axios.get('http://localhost:8080/token',{
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(function (response) {
+        setToken(response.data)
+      })
+      .catch(function (error) {
+        if(error.response.data.msg === "Token has expired"){
+          setToken('')
+        }
+      });
+  },[])
 
   return (
     <Container className={classes.wrapper}>
@@ -25,7 +42,7 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     gap: '60px',
     overflow: 'hidden',
-    animation: `$appear 500ms ease-out`,
+    animation: `$appear 500ms ease-in`,
   },
   '@keyframes appear': {
     '0%': {

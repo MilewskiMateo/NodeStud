@@ -19,3 +19,11 @@ body {
 video::-webkit-media-controls-fullscreen-button {
   display: none;
 }
+
+.MuiInput-underline.Mui-error {
+ border: 1px solid red;
+}
+
+.MuiInput-underline.Mui-error:after {
+  display: none
+}

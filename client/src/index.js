@@ -11,10 +11,12 @@ import { ContactPage } from './pages/ContactPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { LoginPage } from './pages/LoginPage';
 import { CompilationPage } from './pages/CompilationPage';
+import { AuthProvider } from './components/AuthProvider';
 
 const routing = (
-  <Router>
-    <Header/>
+  <AuthProvider>
+    <Router>
+      <Header/>
       <Switch style={{
         overflow: 'hidden',
       }}>
@@ -27,7 +29,8 @@ const routing = (
         <Route exact path="/login" component={LoginPage}/>
         <Route path="/compilation/:address" component={CompilationPage}/>
       </Switch>
-  </Router>
+    </Router>
+  </AuthProvider>
 );
 
 ReactDOM.render(routing, document.getElementById('root'));

@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import axios from 'axios';
+import { useAuth } from '../components/AuthProvider';
 
 export const VideoListPage = () => {
   const classes = useStyles();
@@ -22,6 +23,21 @@ export const VideoListPage = () => {
         setMock(reponse.data);
       });
   }, []);
+
+  const {token, setToken} = useAuth();
+  useEffect(() => {
+    axios.get('http://localhost:8080/token',{
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(function (response) {
+        setToken(response.data)
+      })
+      .catch(function (error) {
+        if(error.response.data.msg === "Token has expired"){
+          setToken('')
+        }
+      });
+  },[])
 
   const increase = () => {
     setBounds(prevState => {
@@ -50,7 +66,7 @@ export const VideoListPage = () => {
         </Box>
         {mock.map((e, idx) => (
             (idx <= (bounds.end) && idx >= (bounds.begin)) ?
-              <Box component={NavLink} to="/video">
+              <Box component={NavLink} to={`/video/${e.id}`}>
                 <div className={classes.card} style={{ backgroundImage: `url(${e.image})` }}>
                 </div>
               </Box> : null
@@ -74,7 +90,7 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    animation: `$appear 500ms ease-out`,
+    animation: `$appear 500ms ease-in`,
   },
   '@keyframes appear': {
     '0%': {

@@ -1,15 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Button, TextField, Typography } from '@material-ui/core';
 import { Controller, useForm } from 'react-hook-form';
 import axios from 'axios';
+import { useAuth } from '../components/AuthProvider';
+import { useHistory } from 'react-router-dom';
 
 export const RegisterPage = () => {
   const classes = useStyles();
+  const history = useHistory()
+  const [errorText, setErrorText] = useState('');
+  const {token, setToken} = useAuth();
+
   const {
     control,
     reset,
-    handleSubmit
+    handleSubmit,
+    formState: {
+      errors
+    }
   } = useForm({
     defaultValues: {
       username: '',
@@ -17,13 +26,28 @@ export const RegisterPage = () => {
       password: '',
     }
   });
+  useEffect(() => {
+    axios.get('http://localhost:8080/token',{
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(function (response) {
+        setToken(response.data)
+      })
+      .catch(function (error) {
+        if(error.response.data.msg === "Token has expired"){
+          setToken('')
+        }
+      });
+  },[])
+
   const onSubmit = data => {
     axios.post('http://localhost:8080/registration/register', data)
       .then(() => {
         reset();
+        history.push('/login')
       })
       .catch(function (error) {
-        console.error(error);
+        setErrorText(error.response.data.responseMessage);
       });
   };
 
@@ -37,8 +61,10 @@ export const RegisterPage = () => {
             <Controller
               name="username"
               control={control}
+              rules={{required: true}}
               render={({ field }) => (
                 <TextField
+                  error={!!errors.username}
                   className={classes.field}
                   {...field}
                 />
@@ -50,8 +76,10 @@ export const RegisterPage = () => {
             <Controller
               name="login"
               control={control}
+              rules={{required: true}}
               render={({ field }) => (
                 <TextField
+                  error={!!errors.login}
                   className={classes.field}
                   {...field}
                 />
@@ -63,16 +91,19 @@ export const RegisterPage = () => {
             <Controller
               name="password"
               control={control}
+              rules={{required: true}}
               render={({ field }) => (
                 <TextField
+                  error={!!errors.password}
                   className={classes.field}
                   {...field}
                 />
               )}
             />
           </Box>
-          <Button type="submit" variant={'outlined'}
+          <Button type="submit" variant={'outlined'} disableRipple
                   className={classes.registerButton}> Register</Button>
+          <Typography className={classes.errorMsg}> {errorText}</Typography>
         </Box>
       </form>
     </Box>
@@ -86,6 +117,15 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    animation: `$appear 500ms ease-in`,
+  },
+  '@keyframes appear': {
+    '0%': {
+      opacity: 0,
+    },
+    '100%': {
+      opacity: 1,
+    }
   },
   formWrapper: {
     display: 'flex',
@@ -93,9 +133,17 @@ const useStyles = makeStyles({
     gap: '30px',
     padding: '30px',
   },
+  errorMsg: {
+    color: 'red',
+    fontWeight: 600,
+    textAlign: 'center'
+  },
   field: {
+    '& div': {
     border: '1px solid white',
     borderRadius: '6px',
+
+    },
     '& input': {
       color: 'white',
       padding: '7px',

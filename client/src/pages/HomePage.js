@@ -1,28 +1,38 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Button, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
+import axios from 'axios';
+import { useAuth } from '../components/AuthProvider';
 
 export const HomePage = function () {
   const classes = useStyles();
   const history = useHistory();
 
-  function leftClick() {
+  function redirect() {
     history.push('/how');
   }
 
-  function rightClick() {
-    history.push('/videos');
-  }
+  const {token, setToken} = useAuth();
+  useEffect(() => {
+    axios.get('http://localhost:8080/token',{
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(function (response) {
+        setToken(response.data)
+      })
+      .catch(function (error) {
+        if(error.response.data.msg === "Token has expired"){
+          setToken('')
+        }
+      });
+  },[])
 
   return (
     <div className={classes.wrapper}>
-      <Box className={classes.leftBox} onClick={leftClick}>
-        <Typography variant="h1" className={classes.font}>
-          Innowacyjny oglądanie filmów
-        </Typography>
-        <Typography variant="h1" className={classes.font}>
-          VideoSpace
+      <Box className={classes.leftBox}>
+        <Typography variant="h1" className={classes.font} style={{ marginBottom: '10px'}}>
+          Innowacyjne oglądanie filmów
         </Typography>
         <Typography variant="p" className={classes.font}>
           Has been the industry standard dummy text ever since the 1500s, when an unknown
@@ -33,9 +43,9 @@ export const HomePage = function () {
           five
         </Typography>
         <Box>
-          <Button className={classes.startNow}>
+          <Button className={classes.startNow} onClick={redirect}>
             <Typography variant="h6" className={classes.font}>
-              Start Now
+              Rozpocznij
             </Typography>
           </Button>
         </Box>
@@ -50,7 +60,7 @@ const useStyles = makeStyles({
     height: 'calc(100vh - 70px)',
     display: 'flex',
     alignItems: 'center',
-    animation: `$appear 500ms ease-out`,
+    animation: `$appear 500ms ease-in`,
   },
   '@keyframes appear': {
     '0%': {
