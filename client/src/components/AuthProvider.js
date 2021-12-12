@@ -6,7 +6,7 @@ const Auth = React.createContext({
   }
 });
 
-export const useAuth = () => useContext(Auth)
+export const useAuth = () => useContext(Auth);
 
 export const AuthProvider = (props) => {
   let [token, setToken] = useState('');

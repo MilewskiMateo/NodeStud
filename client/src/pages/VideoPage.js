@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Container from '@material-ui/core/Container';
-import { Box, Button, Typography, IconButton, CircularProgress } from '@material-ui/core';
+import { Box, Button, CircularProgress, IconButton, Typography } from '@material-ui/core';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { makeStyles } from '@material-ui/core/styles';
@@ -20,7 +20,7 @@ const expressionMap = {
   surprised: 'surprised',
 };
 
-export const VideoPage = () => {
+export const VideoPage = ({ match }) => {
   const classes = useStyles();
   const videoRef = useRef();
   const movieRef = useRef();
@@ -34,6 +34,14 @@ export const VideoPage = () => {
   const [startGenerating, setStartGenerating] = useState(false);
   const [address, setAddress] = useState();
   const stream = useRef(false);
+  const [poster, setPoster] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/videos')
+      .then((reponse) => {
+        setPoster(reponse.data.find(e => e.id === match.params.address).image);
+      });
+  }, [match.params.address]);
 
   useEffect(() => {
     if (now === true) {
@@ -143,7 +151,7 @@ export const VideoPage = () => {
       timestamps: timestamps,
     })
       .then(function (response) {
-        setAddress('/compilation/' + response.data.address)
+        setAddress('/compilation/' + response.data.address);
       })
       .catch(function (error) {
         console.log(error.response.data);
@@ -193,14 +201,15 @@ export const VideoPage = () => {
           </IconButton>
         )}
       <Box className={classes.playerWrapper}>
-        <video className={classes.video} controls crossOrigin="anonymous" controlsList="nofullscreen nodownload"
+        <video className={classes.video} controls crossOrigin="anonymous"
+               controlsList="nofullscreen nodownload"
                onEnded={onEnding} ref={movieRef}>
           <source src={'http://127.0.0.1:8080/video'} type="video/mp4"/>
         </video>
       </Box>
       {info
         ? (
-          <Box className={rightStyle}>
+          <Box className={rightStyle} style={{ backgroundImage: `url(${poster})` }}>
             <IconButton onClick={closeInfo} className={classes.rightClose}><KeyboardArrowRightIcon/></IconButton>
           </Box>
         )
@@ -288,7 +297,6 @@ const useStyles = makeStyles({
     height: '600px',
     border: '1px solid white',
     wordWrap: 'break-word',
-    backgroundImage: 'url(https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg)',
     backgroundRepeat: 'no-repeat',
     backgroundAttachment: 'scroll',
     backgroundSize: 'cover',
@@ -305,7 +313,6 @@ const useStyles = makeStyles({
     height: '600px',
     border: '1px solid white',
     wordWrap: 'break-word',
-    backgroundImage: 'url(https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg)',
     backgroundRepeat: 'no-repeat',
     backgroundAttachment: 'scroll',
     backgroundSize: 'cover',
@@ -332,7 +339,7 @@ const useStyles = makeStyles({
   },
   camera: {
     padding: '10px',
-    // backgroundColor: 'gray',
+    zIndex: 10,
     background: 'linear-gradient(315deg, #2f4353 0%, #333333 74%)',
     minWidth: '400px',
     height: '600px',
@@ -346,6 +353,7 @@ const useStyles = makeStyles({
   },
   cameraOut: {
     padding: '10px',
+    zIndex: 10,
     backgroundColor: 'black',
     minWidth: '400px',
     height: '600px',

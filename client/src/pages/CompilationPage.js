@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import Container from '@material-ui/core/Container';
 import { Box } from '@material-ui/core';
@@ -8,26 +9,31 @@ import { useAuth } from '../components/AuthProvider';
 export const CompilationPage = ({ match }) => {
   const classes = useStyles();
 
-  const {token, setToken} = useAuth();
+  const {
+    token,
+    setToken
+  } = useAuth();
   useEffect(() => {
-    axios.get('http://localhost:8080/token',{
+    axios.get('http://localhost:8080/token', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(function (response) {
-        setToken(response.data)
+        setToken(response.data);
       })
       .catch(function (error) {
-        if(error.response.data.msg === "Token has expired"){
-          setToken('')
+        if (error.response.data.msg === 'Token has expired') {
+          setToken('');
         }
       });
-  },[])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Container className={classes.wrapper}>
       <Box className={classes.playerWrapper}>
         <video className={classes.video} controls crossOrigin="anonymous">
-          <source src={'http://127.0.0.1:8080/compilation/'+ match.params.address} type="video/webm"/>
+          <source src={'http://127.0.0.1:8080/compilation/' + match.params.address}
+                  type="video/webm"/>
         </video>
       </Box>
     </Container>

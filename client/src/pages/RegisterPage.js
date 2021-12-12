@@ -8,9 +8,12 @@ import { useHistory } from 'react-router-dom';
 
 export const RegisterPage = () => {
   const classes = useStyles();
-  const history = useHistory()
+  const history = useHistory();
   const [errorText, setErrorText] = useState('');
-  const {token, setToken} = useAuth();
+  const {
+    token,
+    setToken
+  } = useAuth();
 
   const {
     control,
@@ -27,24 +30,25 @@ export const RegisterPage = () => {
     }
   });
   useEffect(() => {
-    axios.get('http://localhost:8080/token',{
+    axios.get('http://localhost:8080/token', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(function (response) {
-        setToken(response.data)
+        setToken(response.data);
       })
       .catch(function (error) {
-        if(error.response.data.msg === "Token has expired"){
-          setToken('')
+        if (error.response.data.msg === 'Token has expired') {
+          setToken('');
         }
       });
-  },[])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onSubmit = data => {
     axios.post('http://localhost:8080/registration/register', data)
       .then(() => {
         reset();
-        history.push('/login')
+        history.push('/login');
       })
       .catch(function (error) {
         setErrorText(error.response.data.responseMessage);
@@ -61,7 +65,7 @@ export const RegisterPage = () => {
             <Controller
               name="username"
               control={control}
-              rules={{required: true}}
+              rules={{ required: true }}
               render={({ field }) => (
                 <TextField
                   error={!!errors.username}
@@ -76,7 +80,7 @@ export const RegisterPage = () => {
             <Controller
               name="login"
               control={control}
-              rules={{required: true}}
+              rules={{ required: true }}
               render={({ field }) => (
                 <TextField
                   error={!!errors.login}
@@ -91,7 +95,7 @@ export const RegisterPage = () => {
             <Controller
               name="password"
               control={control}
-              rules={{required: true}}
+              rules={{ required: true }}
               render={({ field }) => (
                 <TextField
                   error={!!errors.password}
@@ -140,8 +144,8 @@ const useStyles = makeStyles({
   },
   field: {
     '& div': {
-    border: '1px solid white',
-    borderRadius: '6px',
+      border: '1px solid white',
+      borderRadius: '6px',
 
     },
     '& input': {

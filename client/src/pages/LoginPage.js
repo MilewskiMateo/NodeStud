@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom';
 
 export const LoginPage = () => {
   const classes = useStyles();
-  const history = useHistory()
+  const history = useHistory();
   const [errorText, setErrorText] = useState('');
   const {
     control,
@@ -40,6 +40,7 @@ export const LoginPage = () => {
           setToken('');
         }
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit = data => {
@@ -47,7 +48,7 @@ export const LoginPage = () => {
       .then(function (response) {
         setToken(response.data);
         reset();
-        history.push('/videos')
+        history.push('/videos');
 
       })
       .catch(function (error) {

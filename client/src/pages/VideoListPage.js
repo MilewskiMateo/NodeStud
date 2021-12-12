@@ -24,20 +24,24 @@ export const VideoListPage = () => {
       });
   }, []);
 
-  const {token, setToken} = useAuth();
+  const {
+    token,
+    setToken
+  } = useAuth();
   useEffect(() => {
-    axios.get('http://localhost:8080/token',{
+    axios.get('http://localhost:8080/token', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(function (response) {
-        setToken(response.data)
+        setToken(response.data);
       })
       .catch(function (error) {
-        if(error.response.data.msg === "Token has expired"){
-          setToken('')
+        if (error.response.data.msg === 'Token has expired') {
+          setToken('');
         }
       });
-  },[])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const increase = () => {
     setBounds(prevState => {
@@ -66,7 +70,7 @@ export const VideoListPage = () => {
         </Box>
         {mock.map((e, idx) => (
             (idx <= (bounds.end) && idx >= (bounds.begin)) ?
-              <Box component={NavLink} to={`/video/${e.id}`}>
+              <Box key={e.id} component={NavLink} to={`/video/${e.id}`}>
                 <div className={classes.card} style={{ backgroundImage: `url(${e.image})` }}>
                 </div>
               </Box> : null

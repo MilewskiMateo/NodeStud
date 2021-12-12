@@ -14,22 +14,26 @@ import { useHistory } from 'react-router-dom';
 
 export const HowPage = () => {
   const classes = useStyles();
-  const history = useHistory()
+  const history = useHistory();
 
-  const {token, setToken} = useAuth();
+  const {
+    token,
+    setToken
+  } = useAuth();
   useEffect(() => {
-    axios.get('http://localhost:8080/token',{
+    axios.get('http://localhost:8080/token', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(function (response) {
-        setToken(response.data)
+        setToken(response.data);
       })
       .catch(function (error) {
-        if(error.response.data.msg === "Token has expired"){
-          setToken('')
+        if (error.response.data.msg === 'Token has expired') {
+          setToken('');
         }
       });
-  },[])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function redirect() {
     history.push('/register');
@@ -42,29 +46,38 @@ export const HowPage = () => {
           <Box className={classes.iconWrapper}>
             <SwipeIcon fontSize={'inherit'} className={classes.icon}/>
           </Box>
-          <Typography> Wybór film</Typography>
-          <Typography> W pierwszej kolejności wybierz film z bazy filmów dostępnych w naszym serwisie. Nasza baz wciaż się powieksza i posiada setki wspaniałych tytułów napewno znajdziesz coś dla siebie.</Typography>
+          <Typography style={{ fontWeight: 700 }}> Wybór film</Typography>
+          <Typography> W pierwszej kolejności wybierz film z bazy filmów dostępnych w naszym
+            serwisie. Nasza baz wciaż się powieksza i posiada setki wspaniałych tytułów napewno
+            znajdziesz coś dla siebie.</Typography>
         </Box>
         <Box className={classes.step}>
           <Box className={classes.iconWrapper}>
             <SlideshowIcon fontSize={'inherit'} className={classes.icon}/>
           </Box>
-          <Typography> Oglądanie</Typography>
-          <Typography> Podczas oglądania filmu możesz uruchomić funkcję rejestracji twoich emocji. Jedyne co musisz zrobić to zezwolić na dostęp do twojej kamery w laptopie. Nie martw się nie jesteś w żaden sposób nagrywane my jedynie analizujemy twoje emocje w czasie rzeczywistym. </Typography>
+          <Typography style={{ fontWeight: 700 }}> Oglądanie</Typography>
+          <Typography> Podczas oglądania filmu możesz uruchomić funkcję rejestracji twoich emocji.
+            Jedyne co musisz zrobić to zezwolić na dostęp do twojej kamery w laptopie. Nie martw się
+            nie jesteś w żaden sposób nagrywane my jedynie analizujemy twoje emocje w czasie
+            rzeczywistym. </Typography>
         </Box>
         <Box className={classes.step}>
           <Box className={classes.iconWrapper}>
             <TheaterComedyIcon fontSize={'inherit'} className={classes.icon}/>
           </Box>
-          <Typography> Analiza</Typography>
-          <Typography> Twój wyraz twarzy poddawany jest dogłębnej analizie z wykorzystaniem uczenia maszynowego. Dzięki temu jestemy w stanie rozpoznać emocje jakie ci towarzyszą podczas oglądania filmu. </Typography>
+          <Typography style={{ fontWeight: 700 }}> Analiza</Typography>
+          <Typography> Twój wyraz twarzy poddawany jest dogłębnej analizie z wykorzystaniem uczenia
+            maszynowego. Dzięki temu jestemy w stanie rozpoznać emocje jakie ci towarzyszą podczas
+            oglądania filmu. </Typography>
         </Box>
         <Box className={classes.step}>
           <Box className={classes.iconWrapper}>
             <CelebrationIcon fontSize={'inherit'} className={classes.icon}/>
           </Box>
-          <Typography> Wspomnienia</Typography>
-          <Typography> Na koniec nasz serwis wygeneruje dla ciebie kompilacje najlepszych momentów z filmu na podstawie twoich wcześniejszych emocji. Przeżyj te chwile jeszcze raz!</Typography>
+          <Typography style={{ fontWeight: 700 }}> Wspomnienia</Typography>
+          <Typography> Na koniec nasz serwis wygeneruje dla ciebie kompilacje najlepszych momentów z
+            filmu na podstawie twoich wcześniejszych emocji. Przeżyj te chwile jeszcze
+            raz!</Typography>
         </Box>
         <ArrowForwardIcon className={classes.line} sx={{
           height: '100px',
@@ -90,7 +103,7 @@ export const HowPage = () => {
         <Typography variant="h6">
           Sprawdź
         </Typography>
-      </Button>    </Container>
+      </Button> </Container>
   );
 };
 

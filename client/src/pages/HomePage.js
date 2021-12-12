@@ -13,34 +13,38 @@ export const HomePage = function () {
     history.push('/how');
   }
 
-  const {token, setToken} = useAuth();
+  const {
+    token,
+    setToken
+  } = useAuth();
   useEffect(() => {
-    axios.get('http://localhost:8080/token',{
+    axios.get('http://localhost:8080/token', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(function (response) {
-        setToken(response.data)
+        setToken(response.data);
       })
       .catch(function (error) {
-        if(error.response.data.msg === "Token has expired"){
-          setToken('')
+        if (error.response.data.msg === 'Token has expired') {
+          setToken('');
         }
       });
-  },[])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className={classes.wrapper}>
       <Box className={classes.leftBox}>
-        <Typography variant="h1" className={classes.font} style={{ marginBottom: '10px'}}>
+        <Typography variant="h1" className={classes.font} style={{ marginBottom: '10px' }}>
           Innowacyjne oglądanie filmów
         </Typography>
-        <Typography variant="p" className={classes.font}>
-          Has been the industry standard dummy text ever since the 1500s, when an unknown
-          printer took a
+        <Typography className={classes.font}>
+          VideoSpace jest nie tylko zwykłym serwisem pozwalającym na oglądanie setek filmów, ale i
+          również generatorem kompilacji z ich najlepszymi fragmentami.
         </Typography>
-        <Typography variant="p" className={classes.font}>
-          galley of type and scrambled it to make a type specimen book. It has survived not only
-          five
+        <Typography className={classes.font}>
+          Jesteś ciekaw na jakiej zasadzie to działa? Sprawdź sam co jeszcze VideoSpace jest w
+          stanie ci zaoferować.
         </Typography>
         <Box>
           <Button className={classes.startNow} onClick={redirect}>

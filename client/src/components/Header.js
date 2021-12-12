@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import { Box } from '@material-ui/core';
@@ -7,7 +7,9 @@ import { useAuth } from './AuthProvider';
 export const Header = () => {
   const classes = useStyles();
 
-  const {token, setToken} = useAuth();
+  const {
+    token,
+  } = useAuth();
 
   return (
     <Box className={classes.appBar}>

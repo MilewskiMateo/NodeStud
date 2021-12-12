@@ -23,7 +23,7 @@ const routing = (
         <Route exact path="/" component={HomePage}/>
         <Route exact path="/videos" component={VideoListPage}/>
         <Route exact path="/how" component={HowPage}/>
-        <Route exact path="/video" component={VideoPage}/>
+        <Route path="/video/:address" component={VideoPage}/>
         <Route exact path="/contact" component={ContactPage}/>
         <Route exact path="/register" component={RegisterPage}/>
         <Route exact path="/login" component={LoginPage}/>

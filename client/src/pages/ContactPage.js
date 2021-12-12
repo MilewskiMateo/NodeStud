@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Typography } from '@material-ui/core';
 import { EmialIcon } from '../components/Icons/EmialIcon';
@@ -9,20 +8,24 @@ import { useAuth } from '../components/AuthProvider';
 export const ContactPage = () => {
   const classes = useStyles();
 
-  const {token, setToken} = useAuth();
+  const {
+    token,
+    setToken
+  } = useAuth();
   useEffect(() => {
-    axios.get('http://localhost:8080/token',{
+    axios.get('http://localhost:8080/token', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(function (response) {
-        setToken(response.data)
+        setToken(response.data);
       })
       .catch(function (error) {
-        if(error.response.data.msg === "Token has expired"){
-          setToken('')
+        if (error.response.data.msg === 'Token has expired') {
+          setToken('');
         }
       });
-  },[])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box className={classes.wrapper}>
@@ -35,7 +38,10 @@ export const ContactPage = () => {
           }}/>
         </Box>
         <Box className={classes.rightBox}>
-          <Typography className={classes.paragraph}> Projekt ten został wykonany w ramach pracy inżynierskiej. Praca to była tworza na Politechnice Warszawskiej na wydziale Elektrycznym. Jeśli ciekawi cię więcej na jej temat z kontaktuj się z twórcą. </Typography>
+          <Typography className={classes.paragraph}> Projekt ten został wykonany w ramach pracy
+            inżynierskiej. Praca to była tworza na Politechnice Warszawskiej na wydziale
+            Elektrycznym. Jeśli ciekawi cię więcej na jej temat z kontaktuj się z
+            twórcą. </Typography>
           <Typography className={classes.paragraph}> Email: maewfws23@gmail.com </Typography>
           <Typography className={classes.paragraph}> phone: +45 231 232 534</Typography>
         </Box>
