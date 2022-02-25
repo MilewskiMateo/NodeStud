@@ -147,7 +147,7 @@ export const VideoPage = ({ match }) => {
   const generate = () => {
     setStartGenerating(true);
 
-    axios.post('http://127.0.0.1:8080/generate', {
+    axios.post('http://localhost:8080/generate', {
       timestamps: timestamps,
     })
       .then(function (response) {
@@ -204,7 +204,7 @@ export const VideoPage = ({ match }) => {
         <video className={classes.video} controls crossOrigin="anonymous"
                controlsList="nofullscreen nodownload"
                onEnded={onEnding} ref={movieRef}>
-          <source src={'http://127.0.0.1:8080/video'} type="video/mp4"/>
+          <source src={'http://localhost:8080/video'} type="video/mp4"/>
         </video>
       </Box>
       {info

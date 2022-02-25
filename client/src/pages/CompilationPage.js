@@ -32,7 +32,7 @@ export const CompilationPage = ({ match }) => {
     <Container className={classes.wrapper}>
       <Box className={classes.playerWrapper}>
         <video className={classes.video} controls crossOrigin="anonymous">
-          <source src={'http://127.0.0.1:8080/compilation/' + match.params.address}
+          <source src={'http://localhost:8080/compilation/' + match.params.address}
                   type="video/webm"/>
         </video>
       </Box>
