@@ -9,6 +9,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from '../components/AuthProvider';
 
 const expressionMap = {
   neutral: 'neutral',
@@ -35,11 +36,21 @@ export const VideoPage = ({ match }) => {
   const [address, setAddress] = useState();
   const stream = useRef(false);
   const [poster, setPoster] = useState([]);
+  const [movieUrl, setMovieUrl] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+
+  const {
+    userId,
+  } = useAuth();
 
   useEffect(() => {
-    axios.get('http://localhost:8080/videos')
+    axios.get(`http://localhost:1337/api/movies/${match.params.address}?populate=*`)
       .then((reponse) => {
-        setPoster(reponse.data.find(e => e.id === match.params.address).image);
+        setPoster(reponse.data.data.attributes.poster.data.attributes.url)
+        setTitle(reponse.data.data.attributes.title)
+        setDescription(reponse.data.data.attributes.description)
+        setMovieUrl(reponse.data.data.attributes.video.data.attributes.url)
       });
   }, [match.params.address]);
 
@@ -152,8 +163,19 @@ export const VideoPage = ({ match }) => {
     })
       .then(function (response) {
         setAddress('/compilation/' + response.data.address);
+        axios
+          .post('http://localhost:1337/api/compilations', {data:{
+            title: title,
+            description: description,
+            userId: userId.toString(),
+            posterURL: poster,
+            url:  response.data.address,
+          }})
+          .catch((error) => {
+            console.log(error.response.data);
+          });
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error.response.data);
       });
   };
@@ -201,15 +223,18 @@ export const VideoPage = ({ match }) => {
           </IconButton>
         )}
       <Box className={classes.playerWrapper}>
+        {
+          movieUrl !== '' &&
         <video className={classes.video} controls crossOrigin="anonymous"
                controlsList="nofullscreen nodownload"
                onEnded={onEnding} ref={movieRef}>
-          <source src={'http://localhost:8080/video'} type="video/mp4"/>
+          <source src={`http://localhost:1337${movieUrl}`} type="video/mp4"/>
         </video>
+        }
       </Box>
       {info
         ? (
-          <Box className={rightStyle} style={{ backgroundImage: `url(${poster})` }}>
+          <Box className={rightStyle} style={{ backgroundImage: `url(http://localhost:1337${poster})` }}>
             <IconButton onClick={closeInfo} className={classes.rightClose}><KeyboardArrowRightIcon/></IconButton>
           </Box>
         )

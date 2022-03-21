@@ -8,8 +8,14 @@ export const Header = () => {
   const classes = useStyles();
 
   const {
-    token,
+    userId,
+    setUserId
   } = useAuth();
+
+  const logout = () => {
+    sessionStorage.clear();
+    setUserId(undefined)
+  }
 
   return (
     <Box className={classes.appBar}>
@@ -23,10 +29,21 @@ export const Header = () => {
         <Link to="/contact" className={classes.links}>
           Contact
         </Link>
-        {token !== '' ?
+        {userId ?
+          <>
           <Link to="/videos" className={classes.links}>
             Videos
-          </Link> :
+          </Link>
+            <Link to="/compilations" className={classes.links}>
+              Compilations
+          </Link>
+            <div onClick={logout}>
+              <Link to="/" className={classes.links}>
+                Logout
+              </Link>
+            </div>
+          </>
+          :
           <>
             <Link to="/register" className={classes.links}>
               Register

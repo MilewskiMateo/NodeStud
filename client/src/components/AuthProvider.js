@@ -1,20 +1,24 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 const Auth = React.createContext({
-  token: '',
-  setToken: () => {
+  userId: undefined,
+  setUserId: () => {
   }
 });
 
 export const useAuth = () => useContext(Auth);
 
 export const AuthProvider = (props) => {
-  let [token, setToken] = useState('');
+  let [userId, setUserId] = useState(undefined);
+
+  useEffect(() => {
+    setUserId(sessionStorage.getItem('userId'))
+  }, []);
 
   return (
     <Auth.Provider value={{
-      token: token,
-      setToken: setToken
+      userId: userId,
+      setUserId: setUserId
     }}>
       {props.children}
     </Auth.Provider>

@@ -1,15 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Button, TextField, Typography } from '@material-ui/core';
 import { Controller, useForm } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../components/AuthProvider';
-import { useHistory } from 'react-router-dom';
 
 export const LoginPage = () => {
   const classes = useStyles();
   const history = useHistory();
   const [errorText, setErrorText] = useState('');
+
+  const {
+    setUserId,
+  } = useAuth();
+
   const {
     control,
     reset,
@@ -24,35 +29,21 @@ export const LoginPage = () => {
     }
   });
 
-  const {
-    token,
-    setToken
-  } = useAuth();
-  useEffect(() => {
-    axios.get('http://localhost:8080/token', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(function (response) {
-        setToken(response.data);
-      })
-      .catch(function (error) {
-        if (error.response.data.msg === 'Token has expired') {
-          setToken('');
-        }
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const onSubmit = data => {
-    axios.post('http://localhost:8080/login/log', data,)
-      .then(function (response) {
-        setToken(response.data);
-        reset();
-        history.push('/videos');
-
+    axios
+      .post('http://localhost:1337/api/auth/local', {
+        identifier: data.login,
+        password: data.password,
       })
-      .catch(function (error) {
-        setErrorText(error.response.data.responseMessage);
+      .then(response => {
+        console.log('User profile', response.data.user);
+        sessionStorage.setItem('userId', response.data.user.id);
+        setUserId(response.data.user.id)
+        reset()
+        history.push('/videos');
+      })
+      .catch(error => {
+        setErrorText(error.response.data.error.message);
       });
   };
 
@@ -84,6 +75,7 @@ export const LoginPage = () => {
               rules={{ required: true }}
               render={({ field }) => (
                 <TextField
+                  type="password"
                   error={!!errors.password}
                   className={classes.field}
                   {...field}

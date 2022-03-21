@@ -7,26 +7,32 @@ import { makeStyles } from '@material-ui/core/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import axios from 'axios';
+import { useAuth } from '../components/AuthProvider';
 
-export const VideoListPage = () => {
+export const CompilationListPage = () => {
   const classes = useStyles();
   const [bounds, setBounds] = useState({
     begin: 0,
     end: 3
   });
 
+  const {
+    userId,
+  } = useAuth();
+
   const [movieList, setMovieList] = useState([]);
 
   useEffect(() => {
 
-    }, []);
+  }, []);
 
   useEffect(() => {
-    axios.get('http://localhost:1337/api/movies?populate=*')
+    axios.get('http://localhost:1337/api/compilations?populate=*')
       .then((reponse) => {
-        setMovieList(reponse.data.data)
+        // eslint-disable-next-line eqeqeq
+        setMovieList(reponse.data.data.filter(com=> com.attributes.userId == userId))
       });
-  }, []);
+  }, [userId]);
 
   const increase = () => {
     setBounds(prevState => {
@@ -54,9 +60,9 @@ export const VideoListPage = () => {
                       onClick={decrease}> <ArrowBackIcon/></IconButton>
         </Box>
         {movieList.map((e, idx) => (
-            (idx < (bounds.end) && idx >= (bounds.begin)) ?
-              <Box key={e.id} component={NavLink} to={`/video/${e.id}`}>
-                <div className={classes.card} style={{ backgroundImage: `url(http://localhost:1337${e.attributes.poster.data.attributes.url})` }}>
+            (idx <= (bounds.end) && idx >= (bounds.begin)) ?
+              <Box key={e.id} component={NavLink} to={`/compilation/${e.attributes.url}`}>
+                <div className={classes.card} style={{ backgroundImage: `url(http://localhost:1337${e.attributes.posterURL})` }}>
                 </div>
               </Box> : null
 

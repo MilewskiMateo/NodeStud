@@ -12,6 +12,7 @@ import { RegisterPage } from './pages/RegisterPage';
 import { LoginPage } from './pages/LoginPage';
 import { CompilationPage } from './pages/CompilationPage';
 import { AuthProvider } from './components/AuthProvider';
+import { CompilationListPage } from './pages/CompilationListPage';
 
 const routing = (
   <AuthProvider>
@@ -22,6 +23,7 @@ const routing = (
       }}>
         <Route exact path="/" component={HomePage}/>
         <Route exact path="/videos" component={VideoListPage}/>
+        <Route exact path="/compilations" component={CompilationListPage}/>
         <Route exact path="/how" component={HowPage}/>
         <Route path="/video/:address" component={VideoPage}/>
         <Route exact path="/contact" component={ContactPage}/>

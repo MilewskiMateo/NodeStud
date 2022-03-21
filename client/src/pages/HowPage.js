@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Container from '@material-ui/core/Container';
 import { Box, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,35 +8,23 @@ import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';
 import CelebrationIcon from '@mui/icons-material/Celebration';
 import { Typography } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import axios from 'axios';
-import { useAuth } from '../components/AuthProvider';
 import { useHistory } from 'react-router-dom';
+import { useAuth } from '../components/AuthProvider';
 
 export const HowPage = () => {
   const classes = useStyles();
   const history = useHistory();
 
   const {
-    token,
-    setToken
+    userId,
   } = useAuth();
-  useEffect(() => {
-    axios.get('http://localhost:8080/token', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(function (response) {
-        setToken(response.data);
-      })
-      .catch(function (error) {
-        if (error.response.data.msg === 'Token has expired') {
-          setToken('');
-        }
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   function redirect() {
+    if(userId){
+      history.push('/videos');
+    } else {
     history.push('/register');
+    }
   }
 
   return (

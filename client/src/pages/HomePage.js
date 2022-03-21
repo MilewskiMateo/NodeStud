@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box, Button, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
-import axios from 'axios';
-import { useAuth } from '../components/AuthProvider';
 
 export const HomePage = function () {
   const classes = useStyles();
@@ -12,25 +10,6 @@ export const HomePage = function () {
   function redirect() {
     history.push('/how');
   }
-
-  const {
-    token,
-    setToken
-  } = useAuth();
-  useEffect(() => {
-    axios.get('http://localhost:8080/token', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(function (response) {
-        setToken(response.data);
-      })
-      .catch(function (error) {
-        if (error.response.data.msg === 'Token has expired') {
-          setToken('');
-        }
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div className={classes.wrapper}>

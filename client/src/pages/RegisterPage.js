@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Button, TextField, Typography } from '@material-ui/core';
 import { Controller, useForm } from 'react-hook-form';
 import axios from 'axios';
-import { useAuth } from '../components/AuthProvider';
 import { useHistory } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as Yup from 'yup'
 
 export const RegisterPage = () => {
   const classes = useStyles();
   const history = useHistory();
   const [errorText, setErrorText] = useState('');
-  const {
-    token,
-    setToken
-  } = useAuth();
+
+  const formSchema = Yup.object().shape({
+    username: Yup.string().required('Username is mendatory').min(6, 'Username must be at least 6 char long'),
+    email: Yup.string().required('Email is mendatory').email(),
+    password: Yup.string().required('Password is mendatory').min(6, 'Password must be at least 6 char long'),
+    confirmPwd: Yup.string().required('Password is mendatory').oneOf([Yup.ref('password')], 'Passwords does not match'),
+  })
+  const formOptions = { resolver: yupResolver(formSchema) }
 
   const {
     control,
@@ -22,36 +27,21 @@ export const RegisterPage = () => {
     formState: {
       errors
     }
-  } = useForm({
-    defaultValues: {
-      username: '',
-      login: '',
-      password: '',
-    }
-  });
-  useEffect(() => {
-    axios.get('http://localhost:8080/token', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(function (response) {
-        setToken(response.data);
-      })
-      .catch(function (error) {
-        if (error.response.data.msg === 'Token has expired') {
-          setToken('');
-        }
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  } = useForm(formOptions);
 
   const onSubmit = data => {
-    axios.post('http://localhost:8080/registration/register', data)
+    axios
+      .post('http://localhost:1337/api/auth/local/register', {
+        username: data.username,
+        email: data.email,
+        password: data.password,
+      })
       .then(() => {
         reset();
         history.push('/login');
       })
-      .catch(function (error) {
-        setErrorText(error.response.data.responseMessage);
+      .catch(error => {
+        setErrorText(error.response.data.error.message);
       });
   };
 
@@ -70,21 +60,23 @@ export const RegisterPage = () => {
                 <TextField
                   error={!!errors.username}
                   className={classes.field}
+                  helperText={errors.username?.message}
                   {...field}
                 />
               )}
             />
           </Box>
           <Box>
-            <Typography className={classes.paragraph}> Login</Typography>
+            <Typography className={classes.paragraph}> Email</Typography>
             <Controller
-              name="login"
+              name="email"
               control={control}
               rules={{ required: true }}
               render={({ field }) => (
                 <TextField
-                  error={!!errors.login}
+                  error={!!errors.email}
                   className={classes.field}
+                  helperText={errors.email?.message}
                   {...field}
                 />
               )}
@@ -100,6 +92,25 @@ export const RegisterPage = () => {
                 <TextField
                   error={!!errors.password}
                   className={classes.field}
+                  type="password"
+                  helperText={errors.confirmPwd?.message}
+                  {...field}
+                />
+              )}
+            />
+          </Box>
+          <Box>
+            <Typography className={classes.paragraph}> Repeat Password</Typography>
+            <Controller
+              name="confirmPwd"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField
+                  error={!!errors.confirmPwd}
+                  className={classes.field}
+                  type="password"
+                  helperText={errors.confirmPwd?.message}
                   {...field}
                 />
               )}
@@ -134,7 +145,7 @@ const useStyles = makeStyles({
   formWrapper: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '30px',
+    gap: '20px',
     padding: '30px',
   },
   errorMsg: {
