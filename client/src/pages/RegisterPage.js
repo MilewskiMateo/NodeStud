@@ -1,24 +1,34 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import { Box, Button, TextField, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { Controller, useForm } from 'react-hook-form';
-import axios from 'axios';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useHistory } from 'react-router-dom';
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as Yup from 'yup'
+import * as Yup from 'yup';
+import axios from 'axios';
 
 export const RegisterPage = () => {
   const classes = useStyles();
   const history = useHistory();
   const [errorText, setErrorText] = useState('');
 
-  const formSchema = Yup.object().shape({
-    username: Yup.string().required('Username is mendatory').min(6, 'Username must be at least 6 char long'),
-    email: Yup.string().required('Email is mendatory').email(),
-    password: Yup.string().required('Password is mendatory').min(6, 'Password must be at least 6 char long'),
-    confirmPwd: Yup.string().required('Password is mendatory').oneOf([Yup.ref('password')], 'Passwords does not match'),
-  })
-  const formOptions = { resolver: yupResolver(formSchema) }
+  const formSchema = Yup.object()
+    .shape({
+      email: Yup.string()
+        .required('Email is mendatory')
+        .email(),
+      username: Yup.string()
+        .required('Username is mendatory')
+        .min(6, 'Username must be at least 6 char long'),
+      password: Yup.string()
+        .required('Password is mendatory')
+        .min(6, 'Password must be at least 6 char long'),
+      confirmPwd: Yup.string()
+        .required('Password is mendatory')
+        .oneOf([Yup.ref('password')], 'Passwords does not match'),
+    });
+
+  const formOptions = { resolver: yupResolver(formSchema) };
 
   const {
     control,
@@ -47,11 +57,18 @@ export const RegisterPage = () => {
 
   return (
     <Box className={classes.wrapper}>
-      <Typography className={classes.paragraph} style={{ fontSize: '40px' }}> Register</Typography>
+      <Typography
+        className={classes.paragraph}
+        style={{ fontSize: '40px' }}
+      >
+        Register
+      </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box className={classes.formWrapper}>
           <Box>
-            <Typography className={classes.paragraph}> Username</Typography>
+            <Typography className={classes.paragraph}>
+              Username
+            </Typography>
             <Controller
               name="username"
               control={control}
@@ -67,7 +84,9 @@ export const RegisterPage = () => {
             />
           </Box>
           <Box>
-            <Typography className={classes.paragraph}> Email</Typography>
+            <Typography className={classes.paragraph}>
+              Email
+            </Typography>
             <Controller
               name="email"
               control={control}
@@ -83,7 +102,9 @@ export const RegisterPage = () => {
             />
           </Box>
           <Box>
-            <Typography className={classes.paragraph}> Password</Typography>
+            <Typography className={classes.paragraph}>
+              Password
+            </Typography>
             <Controller
               name="password"
               control={control}
@@ -100,7 +121,9 @@ export const RegisterPage = () => {
             />
           </Box>
           <Box>
-            <Typography className={classes.paragraph}> Repeat Password</Typography>
+            <Typography className={classes.paragraph}>
+              Repeat Password
+            </Typography>
             <Controller
               name="confirmPwd"
               control={control}
@@ -116,9 +139,17 @@ export const RegisterPage = () => {
               )}
             />
           </Box>
-          <Button type="submit" variant={'outlined'} disableRipple
-                  className={classes.registerButton}> Register</Button>
-          <Typography className={classes.errorMsg}> {errorText}</Typography>
+          <Button
+            type="submit"
+            variant={'outlined'}
+            disableRipple
+            className={classes.registerButton}
+          >
+            Register
+          </Button>
+          <Typography className={classes.errorMsg}>
+            {errorText}
+          </Typography>
         </Box>
       </form>
     </Box>

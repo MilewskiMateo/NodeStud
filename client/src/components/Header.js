@@ -14,8 +14,8 @@ export const Header = () => {
 
   const logout = () => {
     sessionStorage.clear();
-    setUserId(undefined)
-  }
+    setUserId(undefined);
+  };
 
   return (
     <Box className={classes.appBar}>
@@ -31,12 +31,12 @@ export const Header = () => {
         </Link>
         {userId ?
           <>
-          <Link to="/videos" className={classes.links}>
-            Videos
-          </Link>
+            <Link to="/videos" className={classes.links}>
+              Videos
+            </Link>
             <Link to="/compilations" className={classes.links}>
               Compilations
-          </Link>
+            </Link>
             <div onClick={logout}>
               <Link to="/" className={classes.links}>
                 Logout

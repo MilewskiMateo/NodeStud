@@ -3,17 +3,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Box, Button, TextField, Typography } from '@material-ui/core';
 import { Controller, useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '../components/AuthProvider';
+import axios from 'axios';
 
 export const LoginPage = () => {
   const classes = useStyles();
   const history = useHistory();
   const [errorText, setErrorText] = useState('');
-
-  const {
-    setUserId,
-  } = useAuth();
+  const { setUserId } = useAuth();
 
   const {
     control,
@@ -36,10 +33,9 @@ export const LoginPage = () => {
         password: data.password,
       })
       .then(response => {
-        console.log('User profile', response.data.user);
         sessionStorage.setItem('userId', response.data.user.id);
-        setUserId(response.data.user.id)
-        reset()
+        setUserId(response.data.user.id);
+        reset();
         history.push('/videos');
       })
       .catch(error => {
@@ -49,11 +45,18 @@ export const LoginPage = () => {
 
   return (
     <Box className={classes.wrapper}>
-      <Typography className={classes.paragraph} style={{ fontSize: '40px' }}> Login</Typography>
+      <Typography
+        className={classes.paragraph}
+        style={{ fontSize: '40px' }}
+      >
+        Login
+      </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box className={classes.formWrapper}>
           <Box>
-            <Typography className={classes.paragraph}> Login</Typography>
+            <Typography className={classes.paragraph}>
+              Login
+            </Typography>
             <Controller
               name="login"
               control={control}
@@ -68,7 +71,9 @@ export const LoginPage = () => {
             />
           </Box>
           <Box>
-            <Typography className={classes.paragraph}> Password</Typography>
+            <Typography className={classes.paragraph}>
+              Password
+            </Typography>
             <Controller
               name="password"
               control={control}
@@ -83,9 +88,17 @@ export const LoginPage = () => {
               )}
             />
           </Box>
-          <Button type="submit" variant={'outlined'} disableRipple
-                  className={classes.registerButton}> Login</Button>
-          <Typography className={classes.errorMsg}> {errorText}</Typography>
+          <Button
+            type="submit"
+            variant={'outlined'}
+            disableRipple
+            className={classes.registerButton}
+          >
+            Login
+          </Button>
+          <Typography className={classes.errorMsg}>
+            {errorText}
+          </Typography>
         </Box>
       </form>
     </Box>

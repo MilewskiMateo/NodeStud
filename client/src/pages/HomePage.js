@@ -7,14 +7,18 @@ export const HomePage = function () {
   const classes = useStyles();
   const history = useHistory();
 
-  function redirect() {
+  const redirect = () => {
     history.push('/how');
-  }
+  };
 
   return (
     <div className={classes.wrapper}>
       <Box className={classes.leftBox}>
-        <Typography variant="h1" className={classes.font} style={{ marginBottom: '10px' }}>
+        <Typography
+          variant="h1"
+          className={classes.font}
+          style={{ marginBottom: '10px' }}
+        >
           Innowacyjne oglądanie filmów
         </Typography>
         <Typography className={classes.font}>
@@ -71,5 +75,4 @@ const useStyles = makeStyles({
     fontFamily: 'Roboto',
     fontWeight: 700,
   },
-
 }, { name: 'HomePage' });

@@ -1,29 +1,36 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Typography } from '@material-ui/core';
-import { EmialIcon } from '../components/Icons/EmialIcon';
+import { EmailIcon } from '../components/Icons/EmailIcon';
 
 export const ContactPage = () => {
   const classes = useStyles();
 
-
   return (
     <Box className={classes.wrapper}>
-      <Typography className={classes.header}> Masz jakieś pytania?</Typography>
+      <Typography className={classes.header}>
+        Masz jakieś pytania?
+      </Typography>
       <Box className={classes.flexWrapper}>
         <Box className={classes.leftBox}>
-          <EmialIcon style={{
+          <EmailIcon style={{
             width: '320px',
             height: '320px'
           }}/>
         </Box>
         <Box className={classes.rightBox}>
-          <Typography className={classes.paragraph}> Projekt ten został wykonany w ramach pracy
+          <Typography className={classes.paragraph}>
+            Projekt ten został wykonany w ramach pracy
             inżynierskiej. Praca to była tworza na Politechnice Warszawskiej na wydziale
             Elektrycznym. Jeśli ciekawi cię więcej na jej temat z kontaktuj się z
-            twórcą. </Typography>
-          <Typography className={classes.paragraph}> Email: maewfws23@gmail.com </Typography>
-          <Typography className={classes.paragraph}> phone: +45 231 232 534</Typography>
+            twórcą.
+          </Typography>
+          <Typography className={classes.paragraph}>
+            Email: maewfws23@gmail.com
+          </Typography>
+          <Typography className={classes.paragraph}>
+            phone: +45 231 232 534
+          </Typography>
         </Box>
       </Box>
     </Box>

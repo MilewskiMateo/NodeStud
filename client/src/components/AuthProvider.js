@@ -12,7 +12,7 @@ export const AuthProvider = (props) => {
   let [userId, setUserId] = useState(undefined);
 
   useEffect(() => {
-    setUserId(sessionStorage.getItem('userId'))
+    setUserId(sessionStorage.getItem('userId'));
   }, []);
 
   return (

@@ -4,12 +4,12 @@ import { Box, Button, CircularProgress, IconButton, Typography } from '@material
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { makeStyles } from '@material-ui/core/styles';
-import * as faceApi from 'face-api.js';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '../components/AuthProvider';
+import { Link } from 'react-router-dom';
+import * as faceApi from 'face-api.js';
+import axios from 'axios';
 
 const expressionMap = {
   neutral: 'neutral',
@@ -25,38 +25,34 @@ export const VideoPage = ({ match }) => {
   const classes = useStyles();
   const videoRef = useRef();
   const movieRef = useRef();
-  const [emotion, setEmotion] = useState();
-  const [timestamps, setTimestamps] = useState([]);
+  const stream = useRef(false);
   const [now, setNow] = useState(false);
   const [info, setInfo] = useState(false);
-  const [leftStyle, setLeftStyle] = useState(classes.camera);
-  const [rightStyle, setRightStyle] = useState(classes.content);
   const [ended, setEnded] = useState(false);
   const [startGenerating, setStartGenerating] = useState(false);
-  const [address, setAddress] = useState();
-  const stream = useRef(false);
+  const [leftStyle, setLeftStyle] = useState(classes.camera);
+  const [rightStyle, setRightStyle] = useState(classes.content);
   const [poster, setPoster] = useState([]);
+  const [timestamps, setTimestamps] = useState([]);
+  const [currentEmotion, setCurrentEmotion] = useState('');
+  const [description, setDescription] = useState('');
   const [movieUrl, setMovieUrl] = useState('');
   const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-
-  const {
-    userId,
-  } = useAuth();
+  const [address, setAddress] = useState();
+  const { userId } = useAuth();
 
   useEffect(() => {
     axios.get(`http://localhost:1337/api/movies/${match.params.address}?populate=*`)
       .then((reponse) => {
-        setPoster(reponse.data.data.attributes.poster.data.attributes.url)
-        setTitle(reponse.data.data.attributes.title)
-        setDescription(reponse.data.data.attributes.description)
-        setMovieUrl(reponse.data.data.attributes.video.data.attributes.url)
+        setPoster(reponse.data.data.attributes.poster.data.attributes.url);
+        setTitle(reponse.data.data.attributes.title);
+        setDescription(reponse.data.data.attributes.description);
+        setMovieUrl(reponse.data.data.attributes.video.data.attributes.url);
       });
   }, [match.params.address]);
 
   useEffect(() => {
     if (now === true) {
-
       async function fetchModel() {
         try {
           await faceApi.nets.tinyFaceDetector.load('/models/');
@@ -66,23 +62,19 @@ export const VideoPage = ({ match }) => {
           });
           videoRef.current.srcObject = stream.current;
         } catch (e) {
-          console.log(e);
+          console.error('failed to load models or access user camera', e);
         }
       }
 
-      try {
-        fetchModel();
-      } catch (e) {
-        console.log('somthing wrong');
-      }
+      fetchModel();
     }
   }, [now]);
 
   useEffect(() => {
-    if (emotion === 'happy') {
+    if (currentEmotion === 'happy') {
       setTimestamps((prev) => [...new Set([...prev, movieRef.current.currentTime])]);
     }
-  }, [emotion]);
+  }, [currentEmotion]);
 
   useEffect(() => {
     return () => {
@@ -99,6 +91,7 @@ export const VideoPage = ({ match }) => {
     return () => {
       clearInterval(time);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [now]);
 
   const closeFace = () => {
@@ -112,11 +105,11 @@ export const VideoPage = ({ match }) => {
         .forEach(function (track) {
           track.stop();
         });
-
       setNow(false);
       setLeftStyle(classes.camera);
     }
   };
+
   const closeInfo = () => {
     setRightStyle(classes.contentOut);
     setTimeout(() => {
@@ -129,14 +122,16 @@ export const VideoPage = ({ match }) => {
     movieRef.current.currentTime = time;
   };
 
-  const onPlay = async () => {
+  const analyze = async () => {
     if (!faceApi.nets.tinyFaceDetector.params) {
       return;
     }
+
     const options = new faceApi.TinyFaceDetectorOptions({
       inputSize: 512,
       scoreThreshold: 0.5,
     });
+
     const result = await faceApi
       .detectSingleFace(videoRef.current, options)
       .withFaceExpressions();
@@ -147,8 +142,13 @@ export const VideoPage = ({ match }) => {
         acc,
         current,
       ) => (acc[1] > current[1] ? acc : current), []);
-      setEmotion(max[0]);
+      return max[0];
     }
+  };
+
+  const onPlay = async () => {
+    const emotion = await analyze();
+    setCurrentEmotion(emotion);
   };
 
   const onEnding = () => {
@@ -164,29 +164,34 @@ export const VideoPage = ({ match }) => {
       .then(function (response) {
         setAddress('/compilation/' + response.data.address);
         axios
-          .post('http://localhost:1337/api/compilations', {data:{
-            title: title,
-            description: description,
-            userId: userId.toString(),
-            posterURL: poster,
-            url:  response.data.address,
-          }})
+          .post('http://localhost:1337/api/compilations', {
+            data: {
+              title: title,
+              description: description,
+              userId: userId.toString(),
+              posterURL: poster,
+              url: response.data.address,
+            }
+          })
           .catch((error) => {
-            console.log(error.response.data);
+            console.error(error.response.data);
           });
       })
       .catch((error) => {
-        console.log(error.response.data);
+        console.error(error.response.data);
       });
   };
 
   return (
     <Container className={classes.wrapper}>
-      {now
-        ? (
+      {now ? (
           <Box className={leftStyle}>
-            <IconButton onClick={closeFace}
-                        className={classes.leftClose}><KeyboardArrowLeftIcon/></IconButton>
+            <IconButton
+              onClick={closeFace}
+              className={classes.leftClose}
+            >
+              <KeyboardArrowLeftIcon/>
+            </IconButton>
             <video
               ref={videoRef}
               className={classes.faceVideo}
@@ -195,7 +200,7 @@ export const VideoPage = ({ match }) => {
               onPlay={onPlay}
             />
             <Typography className={classes.emotion}>
-              {expressionMap[emotion]}
+              {expressionMap[currentEmotion]}
             </Typography>
             <Box className={classes.stampsWrapper}>
               {timestamps.map((stamp) => (
@@ -223,40 +228,53 @@ export const VideoPage = ({ match }) => {
           </IconButton>
         )}
       <Box className={classes.playerWrapper}>
-        {
-          movieUrl !== '' &&
-        <video className={classes.video} controls crossOrigin="anonymous"
-               controlsList="nofullscreen nodownload"
-               onEnded={onEnding} ref={movieRef}>
-          <source src={`http://localhost:1337${movieUrl}`} type="video/mp4"/>
-        </video>
+        {movieUrl !== '' &&
+          <video
+            className={classes.video}
+            controls
+            crossOrigin="anonymous"
+            controlsList="nofullscreen nodownload"
+            onEnded={onEnding}
+            ref={movieRef}
+          >
+            <source src={`http://localhost:1337${movieUrl}`} type="video/mp4"/>
+          </video>
         }
       </Box>
-      {info
-        ? (
-          <Box className={rightStyle} style={{ backgroundImage: `url(http://localhost:1337${poster})` }}>
-            <IconButton onClick={closeInfo} className={classes.rightClose}><KeyboardArrowRightIcon/></IconButton>
-          </Box>
-        )
-        : (
+      {info ? (
+        <Box className={rightStyle}
+             style={{ backgroundImage: `url(http://localhost:1337${poster})` }}>
           <IconButton
-            className={classes.rightOpen}
-            onClick={() => {
-              setInfo(true);
-            }}>
-            <ArrowBackIcon/>
+            onClick={closeInfo}
+            className={classes.rightClose}
+          >
+            <KeyboardArrowRightIcon/>
           </IconButton>
-        )}
+        </Box>
+      ) : (
+        <IconButton
+          className={classes.rightOpen}
+          onClick={() => {
+            setInfo(true);
+          }}>
+          <ArrowBackIcon/>
+        </IconButton>
+      )}
       {ended && timestamps.length > 0 &&
-      <Box className={classes.endedWrapper}>
-        <Button onClick={generate} className={classes.generateButton}>
-          Generate compilation
-        </Button>
-        {startGenerating && (address ?
-          <Link to={address}> Compilation </Link>
-          : <CircularProgress size={26} className={classes.spiner}/>)}
-      </Box>
-      }
+        <Box className={classes.endedWrapper}>
+          <Button
+            onClick={generate}
+            className={classes.generateButton}
+          >
+            Generate compilation
+          </Button>
+          {startGenerating && (address ?
+              <Link to={address}>
+                Compilation
+              </Link>
+              : <CircularProgress size={26} className={classes.spiner}/>
+          )}
+        </Box>}
     </Container>
   );
 };
@@ -469,4 +487,4 @@ const useStyles = makeStyles({
     borderBottom: '1px solid white',
     borderLeft: '1px solid white',
   }
-}, { name: 'HowPage' });
+}, { name: 'VideoPage' });

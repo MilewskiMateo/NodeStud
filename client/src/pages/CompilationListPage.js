@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import '../App.css';
 import Container from '@material-ui/core/Container';
 import { Box, IconButton } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
@@ -11,6 +10,7 @@ import { useAuth } from '../components/AuthProvider';
 
 export const CompilationListPage = () => {
   const classes = useStyles();
+  const [movieList, setMovieList] = useState([]);
   const [bounds, setBounds] = useState({
     begin: 0,
     end: 3
@@ -20,17 +20,11 @@ export const CompilationListPage = () => {
     userId,
   } = useAuth();
 
-  const [movieList, setMovieList] = useState([]);
-
-  useEffect(() => {
-
-  }, []);
-
   useEffect(() => {
     axios.get('http://localhost:1337/api/compilations?populate=*')
       .then((reponse) => {
         // eslint-disable-next-line eqeqeq
-        setMovieList(reponse.data.data.filter(com=> com.attributes.userId == userId))
+        setMovieList(reponse.data.data.filter(com => com.attributes.userId == userId));
       });
   }, [userId]);
 
@@ -51,32 +45,42 @@ export const CompilationListPage = () => {
       };
     });
   };
+
   return (
     <Container maxWidth="xl" className={classes.wrapper}>
       <Box className={classes.cardsWrapper}>
         <Box className={classes.buttonWrapper}>
-
-          <IconButton className={classes.scrollButton} disabled={bounds.begin <= 0}
-                      onClick={decrease}> <ArrowBackIcon/></IconButton>
+          <IconButton
+            className={classes.scrollButton}
+            disabled={bounds.begin <= 0}
+            onClick={decrease}
+          >
+            <ArrowBackIcon/>
+          </IconButton>
         </Box>
         {movieList.map((e, idx) => (
-            (idx <= (bounds.end) && idx >= (bounds.begin)) ?
-              <Box key={e.id} component={NavLink} to={`/compilation/${e.attributes.url}`}>
-                <div className={classes.card} style={{ backgroundImage: `url(http://localhost:1337${e.attributes.posterURL})` }}>
-                </div>
-              </Box> : null
-
-          )
-        )}
+          (idx < (bounds.end) && idx >= (bounds.begin)) ?
+            <Box
+              key={e.id}
+              component={NavLink}
+              to={`/compilation/${e.attributes.url}`}
+            >
+              <div className={classes.card} style={{ backgroundImage: `url(http://localhost:1337${e.attributes.posterURL})` }}/>
+            </Box>
+            : null
+        ))}
         <Box className={classes.buttonWrapper}>
-          <IconButton className={classes.scrollButton} disabled={bounds.end >= movieList.length}
-                      onClick={increase}> <ArrowForwardIcon/></IconButton>
+          <IconButton
+            className={classes.scrollButton}
+            disabled={bounds.end >= movieList.length}
+            onClick={increase}
+          >
+            <ArrowForwardIcon/>
+          </IconButton>
         </Box>
       </Box>
-
     </Container>
-  )
-    ;
+  );
 };
 
 const useStyles = makeStyles({
@@ -121,7 +125,7 @@ const useStyles = makeStyles({
     backgroundSize: 'cover',
     boxShadow: 'rgb(0 0 0 / 50%) 2px 2px 30px 1px',
   },
-}, { name: 'VideosPage' });
+}, { name: 'CompilationListPage' });
 
 
 
